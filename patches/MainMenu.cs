@@ -18,13 +18,14 @@ public static class MenuManager_Start_Patcher
         TextMeshProUGUI buttonText = seedWindow.transform.Find("Tab Selection Hor/Exit/Text (TMP)").gameObject.GetComponent<TextMeshProUGUI>();
         Button button = seedWindow.transform.Find("Tab Selection Hor/Exit").gameObject.GetComponent<Button>();
         TMP_InputField seedPrompt = seedWindow.transform.Find("Seed Input").gameObject.GetComponent<TMP_InputField>();
-        if (buttonText == null || seedPrompt == null || button == null)
+        TextMeshProUGUI placeholder = seedWindow.transform.Find("Seed Input/Text Area/Placeholder").gameObject.GetComponent<TextMeshProUGUI>();
+        if (buttonText == null || seedPrompt == null || button == null || title == null || placeholder == null)
         {
-            IShowSeedPlugin.Logger.LogWarning($"button: {button}\nbuttonText: {buttonText}\nseedPrompt: {seedPrompt}");
+            IShowSeedPlugin.Logger.LogWarning($"button: {button}\nbuttonText: {buttonText}\nseedPrompt: {seedPrompt}\ntitle: {title}\nplaceholder {placeholder}");
             return;
         }
         PatchTitle(title);
-        PatchPrompt(seedPrompt);
+        PatchPrompt(seedPrompt, placeholder);
         PatchButton(button);
 
         void PatchTitle(TextMeshProUGUI title)
@@ -32,21 +33,26 @@ public static class MenuManager_Start_Patcher
             title.text = "ENTER SEED";
         }
 
-        void PatchPrompt(TMP_InputField prompt)
+        void PatchPrompt(TMP_InputField prompt, TextMeshProUGUI placeholder)
         {
-            prompt.text = IShowSeedPlugin.configPresetSeed.Value.ToString();
-            buttonText.color = Color.grey;
-            buttonText.text = "Save to Config";
             prompt.onValueChanged = new TMP_InputField.OnChangeEvent();
             prompt.onValueChanged.AddListener((string _) =>
             {
                 buttonText.color = Color.white;
                 buttonText.text = "Save to Config";
             });
+            prompt.text = IShowSeedPlugin.configPresetSeed.Value.ToString();
+            if (prompt.text == "0")
+            {
+                prompt.text = "";
+            }
+            placeholder.text = "KEEP RANDOM";
         }
 
         void PatchButton(Button button)
         {
+            buttonText.color = Color.grey;
+            buttonText.text = "Save to Config";
             button.onClick = new Button.ButtonClickedEvent();
             button.onClick.AddListener(() =>
             {
