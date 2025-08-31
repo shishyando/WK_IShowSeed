@@ -1,0 +1,9 @@
+{
+    "name": "IShowSeed",
+    "version_number": "0.1.0",
+    "website_url": "https://github.com/shishyando/IShowSeed",
+    "description": "Set and show seed.",
+    "dependencies": [
+        "BepInEx-BepInExPack-5.4.2100"
+    ]
+}
