@@ -54,39 +54,7 @@ public static class UT_SpawnChance_Start_Patcher
     {
         RestoreStateIfAny();
 
-        // logging
-        var tr = __instance.transform;
-        var parent = tr.parent;
-
-        GameObject obj = tr.gameObject;
-        string selfName = obj.name;
-        string parentName = parent != null ? parent.gameObject.name : "<root>";
-        string fullPath = GetPath(tr);
-        int objId = obj.GetInstanceID();
-        int siblingIdx = obj.transform.GetSiblingIndex();
-
-        var st = new StackTrace(skipFrames: 1, fNeedFileInfo: true);
-        string trace = string.Join("\n", st.GetFrames()?
-            .Select(f => f.ToString())
-            .Where(s => s != null &&
-                        !s.Contains("HarmonyLib") &&
-                        !s.Contains(nameof(Postfix)))
-            ?? Array.Empty<string>());
-
-        IShowSeedPlugin.Logger.LogWarning(
-            $"UT_SpawnChance:" +
-            $"\n\tname\t=\t{selfName}" +
-            $"\n\tparent\t=\t{parentName}" +
-            $"\n\tpath\t=\t{fullPath}" +
-            $"\n\tactive\t=\t{obj.activeSelf}" +
-            $"\n\tchance\t=\t{__instance.chance}" +
-            $"\n\tchanceDebug\t=\t{chanceDebugRef(__instance)}" +
-            $"\n\tid\t=\t{objId}" +
-            $"\n\tsiblingIdx\t=\t{siblingIdx}" +
-            $"\n\tStackTrace:" +
-            $"\n{trace}" +
-            "=========="
-        );
+        // Helpers.DebugHelper.LogTransform(__instance.transform, nameof(UT_SpawnChance));
     }
 
     private static void RestoreStateIfAny()
@@ -109,12 +77,5 @@ public static class UT_SpawnChance_Start_Patcher
         return __exception;
     }
 
-    static string GetPath(Transform t)
-    {
-        System.Text.StringBuilder sb = new System.Text.StringBuilder(t.name);
-        for (Transform p = t.parent; p != null; p = p.parent)
-            sb.Insert(0, p.name + "/");
-        return sb.ToString();
-    }
 }
 
