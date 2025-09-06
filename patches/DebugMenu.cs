@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace IShowSeed;
+namespace IShowSeed.Patches;
 
 [HarmonyPatch(typeof(CL_UIManager), "Update")]
 public static class CL_UIManager_Update_Patcher

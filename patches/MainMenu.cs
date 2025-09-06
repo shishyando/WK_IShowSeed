@@ -1,10 +1,9 @@
-using System;
 using HarmonyLib;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace IShowSeed;
+namespace IShowSeed.Patches;
 
 [HarmonyPatch(typeof(MenuManager), "Start")]
 public static class MenuManager_Start_Patcher

@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TMPro;
 
-namespace IShowSeed;
+namespace IShowSeed.Patches;
 
 [HarmonyPatch(typeof(UT_SeededEnable), "OnEnable")]
 public static class UT_SeededEnable_OnEnable_Patcher

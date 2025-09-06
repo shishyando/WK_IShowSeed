@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace IShowSeed;
+namespace IShowSeed.Patches;
 
 [HarmonyPatch(typeof(WorldLoader), "Awake")]
 public static class WorldLoader_Awake_Patcher
@@ -22,5 +22,7 @@ public static class WorldLoader_Initialize_Patcher
     {
         IShowSeedPlugin.Logger.LogInfo($"starting seed: {__instance.startingSeed}");
         IShowSeedPlugin.StartingSeed = __instance.startingSeed;
+
+        UT_SpawnChance_Start_Patcher.callNumber = 1;
     }
 }
