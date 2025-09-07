@@ -22,20 +22,9 @@ Known not-working stuff:
 
 ### UI
 
-Set and show seed. Press `ctrl + shift + S` at the main menu to set the seed
-<div align="center">
-<img src="img/menu.jpg" style="max-width: 80%; height: auto; max-height: 400px; object-fit: contain;">
-</div>
-
-View seed ingame via Debug Menu (`F5`)
-<div align="center">
-<img src="img/debug.jpg" style="max-width: 80%; height: auto; max-height: 400px; object-fit: contain;">
-</div>
-
-Seed shown at the end of the run
-<div align="center">
-<img src="img/stats.jpg" style="max-width: 80%; height: auto; max-height: 400px; object-fit: contain;">
-</div>
+- Set and show seed. Press `ctrl + shift + S` at the main menu to set the seed
+- View seed ingame via Debug Menu (`F5`)
+- Seed shown at the end of the run
 
 ### Found a bug? Something is broken?
 
