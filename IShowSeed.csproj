@@ -2,9 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <AssemblyName>IShowSeed</AssemblyName>
-    <Product>IShowSeedPlugin</Product>
-    <Version>0.1.0</Version>
+    <BepInExPluginGuid>shishyando.WK.IShowSeed</BepInExPluginGuid>
+    <BepInExPluginName>IShowSeed</BepInExPluginName>
+    <Version>0.2.0</Version>
+    <Description>Seed worshipper for White Knuckle.</Description>
+    <PluginUrl>https://github.com/shishyando/WK_IShowSeed</PluginUrl>
+    <DependenciesJson>["BepInEx-BepInExPack-5.4.2100"]</DependenciesJson>
+    <ManifestOutput>$(ProjectDir)manifest.json</ManifestOutput>
+
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -13,7 +18,6 @@
       https://nuget.bepinex.dev/v3/index.json;
       https://nuget.samboy.dev/v3/index.json
     </RestoreAdditionalProjectSources>
-    <RootNamespace>IShowSeed</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,16 +33,35 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>lib\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>lib\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.TextMeshPro">
       <HintPath>lib\Unity.TextMeshPro.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>lib\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
     </Reference>
   </ItemGroup>
+
+  
+  <Target Name="GenerateManifest" AfterTargets="Build">
+    <ItemGroup>
+      <_Manifest Include="{" />
+      <_Manifest Include='  "name": "$(BepInExPluginName)",' />
+      <_Manifest Include='  "version_number": "$(BepInExPluginVersion)",' />
+      <_Manifest Include='  "website_url": "$(PluginUrl)",' />
+      <_Manifest Include='  "description": "$(Description)",' />
+      <_Manifest Include='  "dependencies": $(DependenciesJson)' />
+      <_Manifest Include="}" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(ManifestOutput)" Lines="@(_Manifest)" Overwrite="true" />
+  </Target>
+
 
 </Project>

@@ -5,16 +5,12 @@ using BepInEx.Configuration;
 
 namespace IShowSeed;
 
-[BepInPlugin(GUID, Name, Version)]
+[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class IShowSeedPlugin : BaseUnityPlugin
 {
-    private const string GUID = "shishyando.WK.IShowSeed";
-    private const string Name = "IShowSeed";
-    private const string Version = "0.1.0";
-
     internal static IShowSeedPlugin Instance;
     internal static new ManualLogSource Logger;
-    private readonly Harmony Harmony = new Harmony(GUID);
+    private readonly Harmony Harmony = new(MyPluginInfo.PLUGIN_GUID);
 
     internal static int StartingSeed = 0;
     internal static ConfigEntry<int> configPresetSeed;
@@ -31,7 +27,7 @@ public class IShowSeedPlugin : BaseUnityPlugin
         Harmony.PatchAll(typeof(Patches.UT_SeededEnable_OnEnable_Patcher));
         Harmony.PatchAll(typeof(Patches.ENV_VendingMachine_SetSeed_Patcher));
         Harmony.PatchAll(typeof(Patches.UT_SpawnChance_Start_Patcher));
-        Logger.LogInfo($"{GUID} is loaded");
+        Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");
     }
 }
 
