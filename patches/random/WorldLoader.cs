@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace IShowSeed.Patches;
+namespace IShowSeed.Patches.Random;
 
 [HarmonyPatch(typeof(WorldLoader), "Awake")]
 public static class WorldLoader_Awake_Patcher

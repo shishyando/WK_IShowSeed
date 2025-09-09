@@ -1,6 +1,6 @@
 # IShowSeed
 
-Seed worshipper. Consistent runs. Set and show seed in all gamemodes, persistent between game restarts. Disables achievements and leaderboards.
+Seed worshipper. Consistent runs. Set and show seed in all gamemodes, persistent between game restarts.
 
 ### World generation
 

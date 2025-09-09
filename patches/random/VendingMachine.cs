@@ -1,7 +1,7 @@
 using System;
 using HarmonyLib;
 
-namespace IShowSeed.Patches;
+namespace IShowSeed.Patches.Random;
 
 [HarmonyPatch(typeof(ENV_VendingMachine), "SetSeed")]
 public static class ENV_VendingMachine_SetSeed_Patcher
@@ -14,8 +14,8 @@ public static class ENV_VendingMachine_SetSeed_Patcher
     [HarmonyPostfix]
     public static void SetRandomStateAndRegen(ENV_VendingMachine __instance)
     {
-        UnityEngine.Random.InitState(SeedRef(__instance));
-        CallRegen(__instance);
+        // UnityEngine.Random.InitState(SeedRef(__instance));
+        // CallRegen(__instance);
     }
 }
 

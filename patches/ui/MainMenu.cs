@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace IShowSeed.Patches;
+namespace IShowSeed.Patches.UI;
 
 [HarmonyPatch(typeof(MenuManager), "Start")]
 public static class MenuManager_Start_Patcher

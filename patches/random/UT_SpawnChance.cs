@@ -6,7 +6,7 @@ using System.Threading;
 using HarmonyLib;
 using UnityEngine;
 
-namespace IShowSeed.Patches;
+namespace IShowSeed.Patches.Random;
 
 
 // Should seamlessly inject a custom RandomState (startingSeed + callNumber)
@@ -38,23 +38,21 @@ public static class UT_SpawnChance_Start_Patcher
     [HarmonyPrefix]
     static void Prefix()
     {
-        if (stateStack == null) {
-            stateStack = new Stack<UnityEngine.Random.State>();
-        }
+        // if (stateStack == null) {
+        //     stateStack = new Stack<UnityEngine.Random.State>();
+        // }
 
-        var saved = UnityEngine.Random.state;
-        stateStack.Push(saved);
+        // var saved = UnityEngine.Random.state;
+        // stateStack.Push(saved);
 
-        UnityEngine.Random.InitState(GetScopedSeed());
+        // UnityEngine.Random.InitState(GetScopedSeed());
     }
 
 
     [HarmonyPostfix]
     public static void Postfix(UT_SpawnChance __instance)
     {
-        RestoreStateIfAny();
-
-        // Helpers.DebugHelper.LogTransform(__instance.transform, nameof(UT_SpawnChance));
+        // RestoreStateIfAny();
     }
 
     private static void RestoreStateIfAny()
@@ -64,17 +62,6 @@ public static class UT_SpawnChance_Start_Patcher
             var prev = stateStack.Pop();
             UnityEngine.Random.state = prev;
         }
-    }
-
-    static void Postfix()
-    {
-        RestoreStateIfAny();
-    }
-
-    static Exception Finalizer(Exception __exception)
-    {
-        RestoreStateIfAny();
-        return __exception;
     }
 
 }
