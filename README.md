@@ -22,19 +22,21 @@ Known not-working stuff:
 
 ### UI
 
-Set and show seed. Press `ctrl + shift + S` at the main menu to set the seed
-<div align="center">
-<img src="img/menu.jpg" style="max-width: 80%; height: auto; max-height: 400px; object-fit: contain;">
+Press `ctrl + shift + S` at the main menu to set or clear the seed
+<div align="left">
+<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/menu.jpg" style="width: 538px; height: 410px; object-fit: contain;">
 </div>
+
 
 View seed ingame via Debug Menu (`F5`)
-<div align="center">
-<img src="img/debug.jpg" style="max-width: 80%; height: auto; max-height: 400px; object-fit: contain;">
+<div align="left">
+<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/debug.jpg" style="width: 538px; height: 410px; object-fit: contain;">
 </div>
 
+
 Seed shown at the end of the run
-<div align="center">
-<img src="img/stats.jpg" style="max-width: 80%; height: auto; max-height: 400px; object-fit: contain;">
+<div align="left">
+<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/stats.jpg" style="width: 538px; height: 410px; object-fit: contain;">
 </div>
 
 ### Found a bug? Something is broken?
