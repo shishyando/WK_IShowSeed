@@ -1,7 +1,7 @@
 {
 "name": "IShowSeed",
-"version_number": "0.3.0",
+"version_number": "1.0.0",
 "website_url": "https://github.com/shishyando/WK_IShowSeed",
-"description": "Seed worshipper for White Knuckle.",
+"description": "Seeded runs are now a thing!",
 "dependencies": ["BepInEx-BepInExPack-5.4.2100"]
 }

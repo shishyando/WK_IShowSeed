@@ -1,47 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
 using HarmonyLib;
+using IShowSeed.Random;
 
 namespace IShowSeed.Patches;
 
 [HarmonyPatch(typeof(ENV_VendingMachine), "GenerateOptions")]
 public static class ENV_VendingMachine_GenerateOptions_Patcher
 {
-    public static readonly AccessTools.FieldRef<ENV_VendingMachine, int> localSeedRef = AccessTools.FieldRefAccess<ENV_VendingMachine, int>("localSeed");
+    private static readonly AccessTools.FieldRef<ENV_VendingMachine, int> localSeedRef = AccessTools.FieldRefAccess<ENV_VendingMachine, int>("localSeed");
 
-    private static Stack<UnityEngine.Random.State> stateStack;
-    public static int callNumber = 0;
-    private static int GetScopedSeed()
+    public static void Prefix(ref Rod.Context __state, ENV_VendingMachine __instance)
     {
-        return IShowSeedPlugin.StartingSeed + Interlocked.Increment(ref callNumber);
+        // get seed, save state, Random.InitState, restore later
+        Rod.Enter(ref __state);
+        localSeedRef(__instance) = __state.Seed; // for WorldDumper
     }
 
-    [HarmonyPrefix]
-    static void Prefix(ENV_VendingMachine __instance)
+    public static void Postfix(ref Rod.Context __state)
     {
-        IShowSeedPlugin.mutex.WaitOne();
-        stateStack ??= new Stack<UnityEngine.Random.State>();
-        var saved = UnityEngine.Random.state;
-        stateStack.Push(saved);
-        localSeedRef(__instance) = GetScopedSeed();
-        UnityEngine.Random.InitState(localSeedRef(__instance));
-    }
-
-    [HarmonyPostfix]
-    public static void Postfix(ENV_VendingMachine __instance)
-    {
-        RestoreStateIfAny(__instance);
-        IShowSeedPlugin.mutex.ReleaseMutex();
-    }
-
-    private static void RestoreStateIfAny(ENV_VendingMachine __instance)
-    {
-        if (stateStack != null && stateStack.Count > 0)
-        {
-            var prev = stateStack.Pop();
-            UnityEngine.Random.state = prev;
-        }
+        Rod.Exit(in __state);
     }
 }
 
@@ -50,10 +26,6 @@ public static class ENV_VendingMachine_GenerateOptions_Patcher
 [HarmonyPatch(typeof(ENV_VendingMachine), "SetSeed")]
 public static class ENV_VendingMachine_SetSeed_Patcher
 {
-    [HarmonyPrefix]
-    static bool Prefix(ENV_VendingMachine __instance)
-    {
-        return false;
-    }
+    public static bool Prefix() => false;
 }
 

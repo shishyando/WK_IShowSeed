@@ -1,9 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
 using HarmonyLib;
-using UnityEngine;
 
 namespace IShowSeed.Patches;
 
@@ -12,7 +8,7 @@ namespace IShowSeed.Patches;
 public static class SpawnSettings_GetPossibleEvents_Patcher
 {
     [HarmonyPostfix]
-    static void Postfix(ref List<SessionEvent> __result, CL_EventManager __instance)
+    public static void Postfix(ref List<SessionEvent> __result)
     {
         __result?.RemoveAll(x => { return x.startCheck == SessionEvent.EventStart.checkEverySecond; });
     }

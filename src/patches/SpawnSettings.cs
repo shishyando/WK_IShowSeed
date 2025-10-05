@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using HarmonyLib;
-using UnityEngine;
+using IShowSeed.Random;
 
 namespace IShowSeed.Patches;
 
@@ -13,63 +8,29 @@ namespace IShowSeed.Patches;
 [HarmonyPatch(typeof(SpawnTable.SpawnSettings), "RandomCheck")]
 public static class SpawnSettings_RandomCheck_Patcher
 {
-    private static Stack<UnityEngine.Random.State> stateStack;
-    public static int callNumber = 0;
-    private static int GetScopedSeed()
+    public static bool Prefix(ref Rod.Context __state, ref bool __result, SpawnTable.SpawnSettings __instance)
     {
-        return IShowSeedPlugin.StartingSeed + Interlocked.Increment(ref callNumber);
-    }
-
-    [HarmonyPrefix]
-    static void Prefix(SpawnTable.SpawnSettings __instance)
-    {
-        IShowSeedPlugin.mutex.WaitOne();
-        stateStack ??= new Stack<UnityEngine.Random.State>();
-        var saved = UnityEngine.Random.state;
-        stateStack.Push(saved);
-        UnityEngine.Random.InitState(GetScopedSeed());
-
-        // logging
-        int threadId = Thread.CurrentThread.ManagedThreadId;
-        int objHash = __instance.GetHashCode();
-        var st = new StackTrace(true);
-        string traceStr = st.GetFrames().Select(f =>
+        // first check predefined spawns (like refresh buttons and other stuff which may be annoying)
+        float chance = __instance.GetEffectiveSpawnChance();
+        if (chance == 0f)
         {
-            var m = f.GetMethod();
-            var dt = m.DeclaringType;
-            if (dt == null) return "";
-            return $" ==> {dt.FullName}.{m.Name}";
-        }).Join(delimiter: "");
-        IShowSeedPlugin.Beep.LogInfo($"[PSH] {__instance.GetType().FullName}: thr={threadId}, obj={objHash}, call={callNumber}, state={JsonUtility.ToJson(saved)}\n\tStackTrace {traceStr}\n===============");
-    }
-
-    [HarmonyPostfix]
-    public static void Postfix(SpawnTable.SpawnSettings __instance)
-    {
-        RestoreStateIfAny(__instance);
-
-        // logging
-        int threadId = Thread.CurrentThread.ManagedThreadId;
-        int objHash = __instance.GetHashCode();
-        var st = new StackTrace(true);
-        string traceStr = st.GetFrames().Select(f =>
-        {
-            var m = f.GetMethod();
-            var dt = m.DeclaringType;
-            if (dt == null) return "";
-            return $" ==> {dt.FullName}.{m.Name}";
-        }).Join(delimiter: "");
-        IShowSeedPlugin.Beep.LogInfo($"[POP] {__instance.GetType().FullName}: thr={threadId}, obj={objHash}, call={callNumber}, state={JsonUtility.ToJson(UnityEngine.Random.state)}\n\tStackTrace {traceStr}\n===============");
-        IShowSeedPlugin.mutex.ReleaseMutex();
-    }
-
-    private static void RestoreStateIfAny(SpawnTable.SpawnSettings __instance)
-    {
-        if (stateStack != null && stateStack.Count > 0)
-        {
-            var prev = stateStack.Pop();
-            UnityEngine.Random.state = prev;
+            __result = false;
+            return false;
         }
+        if (chance == 1f)
+        {
+            __result = true;
+            return false;
+        }
+
+        // get seed, save state, Random.InitState, restore later
+        Rod.Enter(ref __state);
+        return true;
+    }
+
+    public static void Postfix(ref Rod.Context __state)
+    {
+        Rod.Exit(in __state);
     }
 
 }

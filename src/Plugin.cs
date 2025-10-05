@@ -2,7 +2,8 @@
 using BepInEx.Logging;
 using HarmonyLib;
 using BepInEx.Configuration;
-using System.Threading;
+using UnityEngine.SceneManagement;
+using IShowSeed.Random;
 
 namespace IShowSeed;
 
@@ -12,7 +13,6 @@ public class IShowSeedPlugin : BaseUnityPlugin
     internal static IShowSeedPlugin Instance;
     internal static ManualLogSource Beep;
     private readonly Harmony Harmony = new(MyPluginInfo.PLUGIN_GUID);
-    internal static Mutex mutex = new();
 
     internal static int StartingSeed = 0;
     internal static ConfigEntry<int> configPresetSeed;
@@ -23,7 +23,19 @@ public class IShowSeedPlugin : BaseUnityPlugin
         Beep = Logger;
         configPresetSeed = Config.Bind("General", "PresetSeed", 0, "Preset seed to use in all gamemodes, `0` to keep the default behaviour");
         Harmony.PatchAll();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
         Beep.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");
+    }
+
+    private void OnSceneLoaded(Scene s, LoadSceneMode m)
+    {
+        if (s.name == "Game-Main") Rod.Enable();
+    }
+
+    private void OnSceneUnloaded(Scene s)
+    {
+        if (s.name == "Game-Main") Rod.Disable();
     }
 }
 

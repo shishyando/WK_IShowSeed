@@ -4,8 +4,8 @@
     <TargetFramework>net48</TargetFramework>
     <BepInExPluginGuid>shishyando.WK.IShowSeed</BepInExPluginGuid>
     <BepInExPluginName>IShowSeed</BepInExPluginName>
-    <Version>0.3.0</Version>
-    <Description>Seed worshipper for White Knuckle.</Description>
+    <Version>1.0.0</Version>
+    <Description>Seeded runs are now a thing!</Description>
     <PluginUrl>https://github.com/shishyando/WK_IShowSeed</PluginUrl>
     <DependenciesJson>["BepInEx-BepInExPack-5.4.2100"]</DependenciesJson>
     <ManifestOutput>$(ProjectDir)manifest.json</ManifestOutput>
@@ -40,6 +40,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="ALINE">
+      <HintPath>lib\ALINE.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>lib\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>

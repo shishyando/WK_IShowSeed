@@ -1,26 +1,8 @@
 # IShowSeed
 
-Seed worshipper. Consistent runs. Set and show seed in all gamemodes, persistent between game restarts.
+Seeded runs are now a thing! Set seed in any gamemode via UI and make your runs consistent.
 
-### World generation
-
-Things that should stay the same with same seed:
-- Levels generation (rooms)
-- Props on the ground (like pitons, rebars, etc.)
-- Perks & Buffs (temporary and permanent)
-- Vending Machines with items have persistent spawn and items
-- Enemies spawn
-- events (fog, drone spawns)
-
-Being tested (may or may not work):
-- Roaches
-- Turrets
-- Barnacle tongues
-
-Known not-working stuff:
-- yet to find out
-
-### UI
+## UI
 
 Press `ctrl + shift + S` at the main menu to set or clear the seed
 <div align="left">
@@ -39,6 +21,21 @@ Seed shown at the end of the run
 <img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/stats.jpg" style="width: 538px; height: 410px; object-fit: contain;">
 </div>
 
-### Found a bug? Something is broken?
+## Config
 
-You can find me on the official White Knuckle Discord server and provide the info / request any features. You can also make PRs on GitHub.
+#### `PresetSeed` (UI is simpler)
+Preset seed which will be applied to all runs. `0` for random.
+
+## Things to notice
+
+- Some session events that do not affect gameplay are disabled (all per-second events like announcements that can occur any second)
+- Levels do not flip
+- Some things are spawned by a trigger (e.g. when a player steps into an invisible zone)
+    1) They only spawn roaches and hoppers AFAIK, so `UT_TriggerSpawn`s are pretty much harmless
+    2) The result relies on the order in which you enter the triggers: you run the same path - you get the same spawns, you go the other way - spawns change.
+- The mod is quite complex, your FPS may be lower than usual. My lowest FPS with this mod and another heavy one was around 150, so it should be fine, but you are warned.
+- Even though the mod was tested, you still may encounter a deadlock/game freeze. In this case please contact me via official White Knuckle discord server.
+
+## Found a bug? Something is broken?
+
+You can find me on the official White Knuckle Discord server and provide the info / request any features. You can also make PRs on GitHub. I recommend intense testing via [WorldDumper plugin](https://github.com/shishyando/WK_WorldDumper).

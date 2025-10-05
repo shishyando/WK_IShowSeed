@@ -8,9 +8,7 @@ namespace IShowSeed.Patches.UI;
 [HarmonyPatch(typeof(MenuManager), "Start")]
 public static class MenuManager_Start_Patcher
 {
-
-    [HarmonyPostfix]
-    public static void PatchSeedWindow(MenuManager __instance)
+    public static void Postfix(MenuManager __instance)
     {
         GameObject seedWindow = __instance.seedWindow;
         TextMeshProUGUI title = seedWindow.transform.Find("Overview Titles/Title Text").gameObject.GetComponent<TextMeshProUGUI>();
