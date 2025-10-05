@@ -2,6 +2,7 @@
 using BepInEx.Logging;
 using HarmonyLib;
 using BepInEx.Configuration;
+using System.Threading;
 
 namespace IShowSeed;
 
@@ -11,6 +12,7 @@ public class IShowSeedPlugin : BaseUnityPlugin
     internal static IShowSeedPlugin Instance;
     internal static ManualLogSource Beep;
     private readonly Harmony Harmony = new(MyPluginInfo.PLUGIN_GUID);
+    internal static Mutex mutex = new();
 
     internal static int StartingSeed = 0;
     internal static ConfigEntry<int> configPresetSeed;
@@ -18,7 +20,7 @@ public class IShowSeedPlugin : BaseUnityPlugin
     private void Awake()
     {
         Instance = this;
-        Beep = base.Logger;
+        Beep = Logger;
         configPresetSeed = Config.Bind("General", "PresetSeed", 0, "Preset seed to use in all gamemodes, `0` to keep the default behaviour");
         Harmony.PatchAll();
         Beep.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");

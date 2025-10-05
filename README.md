@@ -10,12 +10,12 @@ Things that should stay the same with same seed:
 - Perks & Buffs (temporary and permanent)
 - Vending Machines with items have persistent spawn and items
 - Enemies spawn
+- events (fog, drone spawns)
 
 Being tested (may or may not work):
 - Roaches
 - Turrets
 - Barnacle tongues
-- events (fog, drone spawns)
 
 Known not-working stuff:
 - yet to find out

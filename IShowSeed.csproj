@@ -4,7 +4,7 @@
     <TargetFramework>net48</TargetFramework>
     <BepInExPluginGuid>shishyando.WK.IShowSeed</BepInExPluginGuid>
     <BepInExPluginName>IShowSeed</BepInExPluginName>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <Description>Seed worshipper for White Knuckle.</Description>
     <PluginUrl>https://github.com/shishyando/WK_IShowSeed</PluginUrl>
     <DependenciesJson>["BepInEx-BepInExPack-5.4.2100"]</DependenciesJson>
