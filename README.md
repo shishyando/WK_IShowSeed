@@ -33,7 +33,7 @@ Preset seed which will be applied to all runs. `0` for random.
 - Some things are spawned by a trigger (e.g. when a player steps into an invisible zone)
     1) They only spawn roaches and hoppers AFAIK, so `UT_TriggerSpawn`s are pretty much harmless
     2) The result relies on the order in which you enter the triggers: you run the same path - you get the same spawns, you go the other way - spawns change.
-- The mod is quite complex, your FPS may be lower than usual. My lowest FPS with this mod and another heavy one was around 150, so it should be fine, but you are warned.
+- The mod is quite complex. Even though I made a few optimizations and my game runs completely seamlessly, you may encounter lags or FPS. In this case please contact me via official White Knuckle discord server.
 - Even though the mod was tested, you still may encounter a deadlock/game freeze. In this case please contact me via official White Knuckle discord server.
 
 ## Found a bug? Something is broken?
