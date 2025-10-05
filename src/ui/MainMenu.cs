@@ -3,14 +3,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace IShowSeed.Patches;
+namespace IShowSeed.Patches.UI;
 
 [HarmonyPatch(typeof(MenuManager), "Start")]
 public static class MenuManager_Start_Patcher
 {
-
-    [HarmonyPostfix]
-    public static void PatchSeedWindow(MenuManager __instance)
+    public static void Postfix(MenuManager __instance)
     {
         GameObject seedWindow = __instance.seedWindow;
         TextMeshProUGUI title = seedWindow.transform.Find("Overview Titles/Title Text").gameObject.GetComponent<TextMeshProUGUI>();
@@ -20,7 +18,7 @@ public static class MenuManager_Start_Patcher
         TextMeshProUGUI placeholder = seedWindow.transform.Find("Seed Input/Text Area/Placeholder").gameObject.GetComponent<TextMeshProUGUI>();
         if (buttonText == null || seedPrompt == null || button == null || title == null || placeholder == null)
         {
-            IShowSeedPlugin.Logger.LogWarning($"button: {button}\nbuttonText: {buttonText}\nseedPrompt: {seedPrompt}\ntitle: {title}\nplaceholder {placeholder}");
+            IShowSeedPlugin.Beep.LogWarning($"button: {button}\nbuttonText: {buttonText}\nseedPrompt: {seedPrompt}\ntitle: {title}\nplaceholder {placeholder}");
             return;
         }
         PatchTitle(title);
@@ -60,7 +58,7 @@ public static class MenuManager_Start_Patcher
                 {
                     IShowSeedPlugin.configPresetSeed.Value = newSeed;
                     IShowSeedPlugin.Instance.Config.Save();
-                    IShowSeedPlugin.Logger.LogInfo($"Set new seed to {newSeed}");
+                    IShowSeedPlugin.Beep.LogInfo($"Set new seed to {newSeed}");
                     seedWindow.SetActive(false);
                 }
                 else

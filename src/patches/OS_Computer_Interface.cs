@@ -1,0 +1,11 @@
+using HarmonyLib;
+
+namespace IShowSeed.Patches;
+
+
+// seed will be set by the mod, not by the game
+[HarmonyPatch(typeof(OS_Computer_Interface), "SetSeed")]
+public static class OS_Computer_Interface_SetSeed_Patcher
+{
+    public static bool Prefix() => false;
+}
