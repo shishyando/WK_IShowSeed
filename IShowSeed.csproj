@@ -4,7 +4,7 @@
     <TargetFramework>net48</TargetFramework>
     <BepInExPluginGuid>shishyando.WK.IShowSeed</BepInExPluginGuid>
     <BepInExPluginName>IShowSeed</BepInExPluginName>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Description>Seeded runs are now a thing!</Description>
     <PluginUrl>https://github.com/shishyando/WK_IShowSeed</PluginUrl>
     <DependenciesJson>["BepInEx-BepInExPack-5.4.2100"]</DependenciesJson>
