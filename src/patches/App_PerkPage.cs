@@ -7,6 +7,7 @@ namespace IShowSeed.Patches;
 public static class App_PerkPage_GenerateCards_Patcher
 {
     private static readonly AccessTools.FieldRef<App_PerkPage, OS_Manager> osRef = AccessTools.FieldRefAccess<OS_Manager>(typeof(App_PerkPage), "os");
+    private static readonly AccessTools.FieldRef<OS_Computer_Interface, int> seedRef = AccessTools.FieldRefAccess<int>(typeof(OS_Computer_Interface), "seed");
 
     public static void Prefix(ref Rod.Context __state, App_PerkPage __instance)
     {
@@ -17,7 +18,7 @@ public static class App_PerkPage_GenerateCards_Patcher
 
     public static void Postfix(ref Rod.Context __state, App_PerkPage __instance)
     {
-        osRef(__instance).worldInterface.SetSeed(__state.Seed);
+        seedRef(osRef(__instance).worldInterface) = __state.Seed; // use direct access instead of patched out `SetSeed`
         Rod.Exit(in __state);
     }
 
