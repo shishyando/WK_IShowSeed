@@ -12,7 +12,7 @@ public static class ENV_VendingMachine_GenerateOptions_Patcher
     {
         // get seed, save state, Random.InitState, restore later
         Rod.Enter(ref __state);
-        localSeedRef(__instance) = __state.Seed; // for WorldDumper
+        localSeedRef(__instance) = __state.BaseSeed; // for WorldDumper
     }
 
     public static void Postfix(ref Rod.Context __state)

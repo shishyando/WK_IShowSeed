@@ -18,7 +18,7 @@ public static class App_PerkPage_GenerateCards_Patcher
 
     public static void Postfix(ref Rod.Context __state, App_PerkPage __instance)
     {
-        seedRef(osRef(__instance).worldInterface) = __state.Seed; // use direct access instead of patched out `SetSeed`
+        seedRef(osRef(__instance).worldInterface) = __state.BaseSeed; // use direct access instead of patched out `SetSeed`
         Rod.Exit(in __state);
     }
 

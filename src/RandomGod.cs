@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using HarmonyLib;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace IShowSeed.Random;
@@ -9,40 +11,42 @@ namespace IShowSeed.Random;
 public static class Rod // short for RandomGod
 {
     private static readonly object _lock = new();
-    private static readonly Dictionary<string, UnityEngine.Random.State> _stateBySite = [];
+    private static readonly Dictionary<int, UnityEngine.Random.State> _stateBySiteSeed = [];
+    private static readonly Dictionary<int, uint> _cntBySiteSeed = [];
     private static bool _enabled;
 
     public struct Context
     {
         public UnityEngine.Random.State PrevRandomState;
-        public string SiteKey;
-        public int Seed;
+        public int BaseSeed;
         public bool Valid;
+        public uint CallNumber;
     }
 
     internal static void Enter(ref Context ctx)
     {
         // IShowSeedPlugin.Beep.LogInfo($"ROD: Enter called");
         if (!_enabled) return;
-        ctx = default;
-        ctx.SiteKey = ComputeSiteKey();
-        ctx.Seed = DeriveSeed(ctx.SiteKey);
+        ctx = default; 
+        ctx.BaseSeed = DeriveSeed(ComputeSiteKey());
         Monitor.Enter(_lock);
         ctx.PrevRandomState = UnityEngine.Random.state;
 
-        if (!_stateBySite.ContainsKey(ctx.SiteKey))
+        if (!_stateBySiteSeed.ContainsKey(ctx.BaseSeed))
         {
             // create a new Random.State which will advance in future
             // have to InitState with a derived seed to save it
-            var tmpPrev = UnityEngine.Random.state;
-            UnityEngine.Random.InitState(ctx.Seed);
-            UnityEngine.Random.State siteState = UnityEngine.Random.state;
-            UnityEngine.Random.state = tmpPrev;
-
-            _stateBySite[ctx.SiteKey] = siteState;
+            UnityEngine.Random.InitState(ctx.BaseSeed);
+            _stateBySiteSeed[ctx.BaseSeed] = UnityEngine.Random.state;
+            _cntBySiteSeed[ctx.BaseSeed] = 1;
+            ctx.CallNumber = 1;
+        }
+        else
+        {
+            UnityEngine.Random.state = _stateBySiteSeed[ctx.BaseSeed];
+            ctx.CallNumber = ++_cntBySiteSeed[ctx.BaseSeed];
         }
 
-        UnityEngine.Random.state = _stateBySite[ctx.SiteKey];
         ctx.Valid = true;
         // IShowSeedPlugin.Beep.LogInfo($"ROD: Enter COMPLETED!, {ctx.SiteKey}");
     }
@@ -52,15 +56,23 @@ public static class Rod // short for RandomGod
         // IShowSeedPlugin.Beep.LogInfo($"ROD: Exit called, ctx.Valid={ctx.Valid}");
         if (!_enabled || !ctx.Valid) return;
         var newState = UnityEngine.Random.state;
-        if (ctx.SiteKey == null)
+        string newStateAfterCallToSave = JsonUtility.ToJson(newState);
+        string pulledBeforeCallStateStr = JsonUtility.ToJson(_stateBySiteSeed[ctx.BaseSeed]);
+        if (newStateAfterCallToSave == pulledBeforeCallStateStr)
         {
-            IShowSeedPlugin.Beep.LogError($"SiteKey is null, {GetStackTraceStr(0)}");
-            return;
+            IShowSeedPlugin.Beep.LogInfo($"\n################################\n unchanged states:\npulledBeforeCall={pulledBeforeCallStateStr}\nnewStateAfterCallToSave={newStateAfterCallToSave}\nsite={GetStackTraceStr(2)}\n\n################################\n");
         }
-        _stateBySite[ctx.SiteKey] = newState;
+        _stateBySiteSeed[ctx.BaseSeed] = newState;
+        if (GetStackTraceStr(2).Contains("App_PerkPage"))
+        {
+            IShowSeedPlugin.Beep.LogWarning($"=========================== ROD exit completed with seed {ctx.BaseSeed} (callNumber={ctx.CallNumber})");
+            IShowSeedPlugin.Beep.LogWarning($"\npulledBeforeCall: {pulledBeforeCallStateStr}\nnewStateAfterCallToSave: {newStateAfterCallToSave}");
+            IShowSeedPlugin.Beep.LogWarning($"new random state map:\n\t{_stateBySiteSeed.Select(kvp => { return $"s={kvp.Key}, r={JsonUtility.ToJson(kvp.Value)}"; }).Join(delimiter: "\n\t")}");
+            IShowSeedPlugin.Beep.LogWarning($"new call number map:\n{JsonConvert.SerializeObject(_cntBySiteSeed)}");
+            IShowSeedPlugin.Beep.LogWarning($"\nsitekey:{GetStackTraceStr(2)}");
+        }
         UnityEngine.Random.state = ctx.PrevRandomState;
         Monitor.Exit(_lock);
-        // IShowSeedPlugin.Beep.LogInfo($"ROD: Exit COMPLETED!");
     }
 
     private static string ComputeSiteKey()
@@ -73,33 +85,32 @@ public static class Rod // short for RandomGod
 
     private static int DeriveSeed(string siteKey)
     {
-        // IShowSeedPlugin.Beep.LogInfo($"ROD: DeriveSeed called");
         return Animator.StringToHash(siteKey) ^ IShowSeedPlugin.StartingSeed;
     }
 
     internal static void Enable()
     {
-        IShowSeedPlugin.Beep.LogWarning($"\n===========================\n\n\n eeeeeNNANABBLLELEE \n\n\n===========================\n");
+        IShowSeedPlugin.Beep.LogWarning($"\n===========================\n\n\n enable eeeeeNNANABBLLELEE qwe \n\n\n===========================\n");
         Monitor.Enter(_lock);
         _enabled = true;
-        _stateBySite.Clear();
+        _stateBySiteSeed.Clear();
         Monitor.Exit(_lock);
     }
 
     internal static void Disable()
     {
-        IShowSeedPlugin.Beep.LogWarning($"\n===========================\n\n\n dissable \n\n\n===========================\n");
+        IShowSeedPlugin.Beep.LogWarning($"\n===========================\n\n\n disable asdasd \n\n\n===========================\n");
         Monitor.Enter(_lock);
         _enabled = false;
-        _stateBySite.Clear();
+        _stateBySiteSeed.Clear();
         Monitor.Exit(_lock);
     }
 
     internal static void Reset()
     {
-        IShowSeedPlugin.Beep.LogWarning($"\n===========================\n\n\n reset  RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRReset \n\n\n===========================\n");
+        IShowSeedPlugin.Beep.LogWarning($"\n===========================\n\n\n reset  RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRReset zxc \n\n\n===========================\n");
         Monitor.Enter(_lock);
-        _stateBySite.Clear();
+        _stateBySiteSeed.Clear();
         Monitor.Exit(_lock);
     }
 
