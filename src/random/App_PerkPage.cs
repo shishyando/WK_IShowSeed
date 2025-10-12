@@ -1,8 +1,9 @@
 using HarmonyLib;
-using IShowSeed.Random;
+using UnityEngine;
 
-namespace IShowSeed.Patches;
+namespace IShowSeed.Random;
 
+[TogglablePatch]
 [HarmonyPatch(typeof(App_PerkPage), "GenerateCards")]
 public static class App_PerkPage_GenerateCards_Patcher
 {
@@ -13,10 +14,10 @@ public static class App_PerkPage_GenerateCards_Patcher
     {
         // get seed, save state, Random.InitState, restore later
         Rod.Enter(ref __state);
-        osRef(__instance).worldInterface.SetSeed(-1); // so it does not call Random.InitState inside
+        seedRef(osRef(__instance).worldInterface) = -1; // so it does not call Random.InitState inside
     }
 
-    public static void Postfix(ref Rod.Context __state, App_PerkPage __instance)
+    public static void Finalizer(ref Rod.Context __state, App_PerkPage __instance)
     {
         seedRef(osRef(__instance).worldInterface) = __state.BaseSeed; // use direct access instead of patched out `SetSeed`
         Rod.Exit(in __state);

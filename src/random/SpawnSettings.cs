@@ -1,10 +1,10 @@
 using HarmonyLib;
-using IShowSeed.Random;
 
-namespace IShowSeed.Patches;
+namespace IShowSeed.Random;
 
 // basically determines all the random stuff except for perks, vendos and artifacts,
 // it should be almost the only one to override
+[TogglablePatch]
 [HarmonyPatch(typeof(SpawnTable.SpawnSettings), "RandomCheck")]
 public static class SpawnSettings_RandomCheck_Patcher
 {
@@ -28,7 +28,7 @@ public static class SpawnSettings_RandomCheck_Patcher
         return true;
     }
 
-    public static void Postfix(ref Rod.Context __state)
+    public static void Finalizer(ref Rod.Context __state)
     {
         Rod.Exit(in __state);
     }

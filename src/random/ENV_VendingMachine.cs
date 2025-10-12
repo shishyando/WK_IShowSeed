@@ -1,8 +1,8 @@
 using HarmonyLib;
-using IShowSeed.Random;
 
-namespace IShowSeed.Patches;
+namespace IShowSeed.Random;
 
+[TogglablePatch]
 [HarmonyPatch(typeof(ENV_VendingMachine), "GenerateOptions")]
 public static class ENV_VendingMachine_GenerateOptions_Patcher
 {
@@ -15,7 +15,7 @@ public static class ENV_VendingMachine_GenerateOptions_Patcher
         localSeedRef(__instance) = __state.BaseSeed; // for WorldDumper
     }
 
-    public static void Postfix(ref Rod.Context __state)
+    public static void Finalizer(ref Rod.Context __state)
     {
         Rod.Exit(in __state);
     }
@@ -23,6 +23,7 @@ public static class ENV_VendingMachine_GenerateOptions_Patcher
 
 
 // seed will be set by the mod, not by the game
+[TogglablePatch]
 [HarmonyPatch(typeof(ENV_VendingMachine), "SetSeed")]
 public static class ENV_VendingMachine_SetSeed_Patcher
 {

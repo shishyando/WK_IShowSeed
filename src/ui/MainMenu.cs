@@ -3,8 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace IShowSeed.Patches.UI;
+namespace IShowSeed.Random.UI;
 
+[PermanentPatch]
 [HarmonyPatch(typeof(MenuManager), "Start")]
 public static class MenuManager_Start_Patcher
 {
@@ -38,7 +39,7 @@ public static class MenuManager_Start_Patcher
                 buttonText.color = Color.white;
                 buttonText.text = "Save to Config";
             });
-            prompt.text = IShowSeedPlugin.configPresetSeed.Value.ToString();
+            prompt.text = IShowSeedPlugin.ConfigPresetSeed.Value.ToString();
             if (prompt.text == "0")
             {
                 prompt.text = "";
@@ -56,7 +57,7 @@ public static class MenuManager_Start_Patcher
                 bool success = int.TryParse(seedPrompt.text, out int newSeed);
                 if (success || seedPrompt.text == "")
                 {
-                    IShowSeedPlugin.configPresetSeed.Value = newSeed;
+                    IShowSeedPlugin.ConfigPresetSeed.Value = newSeed;
                     IShowSeedPlugin.Instance.Config.Save();
                     IShowSeedPlugin.Beep.LogInfo($"Set new seed to {newSeed}");
                     seedWindow.SetActive(false);

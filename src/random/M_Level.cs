@@ -1,7 +1,8 @@
 using HarmonyLib;
 
-namespace IShowSeed.Patches;
+namespace IShowSeed.Random;
 
+[TogglablePatch]
 [HarmonyPatch(typeof(M_Level), "Awake")]
 public static class M_Level_Awake_Patcher
 {

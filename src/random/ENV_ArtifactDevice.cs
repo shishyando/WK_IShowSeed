@@ -1,9 +1,9 @@
 using HarmonyLib;
-using IShowSeed.Random;
 
-namespace IShowSeed.Patches;
+namespace IShowSeed.Random;
 
 
+[TogglablePatch]
 [HarmonyPatch(typeof(ENV_ArtifactDevice), "Start")]
 public static class ENV_ArtifactDevice_Start_Patcher
 {
@@ -13,7 +13,7 @@ public static class ENV_ArtifactDevice_Start_Patcher
         Rod.Enter(ref __state);
     }
 
-    public static void Postfix(ref Rod.Context __state)
+    public static void Finalizer(ref Rod.Context __state)
     {
         Rod.Exit(in __state);
     }

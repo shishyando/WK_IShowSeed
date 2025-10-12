@@ -49,27 +49,27 @@ public static class Rod // short for RandomGod
 
         ctx.Valid = true;
         // IShowSeedPlugin.Beep.LogInfo($"ROD: Enter COMPLETED!, {ctx.SiteKey}");
+        if (GetStackTraceStr(2).Contains("App_PerkPage"))
+        {
+            IShowSeedPlugin.Beep.LogWarning($"...........................\nROD enter started with seed {ctx.BaseSeed} (callNumber={ctx.CallNumber})\n\tctx.PrevRandomState: {JsonUtility.ToJson(ctx.PrevRandomState)}\n\tUnityEngine.Random.state: {JsonUtility.ToJson(UnityEngine.Random.state)}\nnew random state map:\n\t{_stateBySiteSeed.Select(kvp => { return $"s={kvp.Key}, r={JsonUtility.ToJson(kvp.Value)}"; }).Join(delimiter: "\n\t")}\nnew call number map:\n{JsonConvert.SerializeObject(_cntBySiteSeed)}\n\nsitekey: {GetStackTraceStr(2)}\n....................................");
+        }
     }
 
     internal static void Exit(in Context ctx)
     {
         // IShowSeedPlugin.Beep.LogInfo($"ROD: Exit called, ctx.Valid={ctx.Valid}");
-        if (!_enabled || !ctx.Valid) return;
-        var newState = UnityEngine.Random.state;
-        string newStateAfterCallToSave = JsonUtility.ToJson(newState);
-        string pulledBeforeCallStateStr = JsonUtility.ToJson(_stateBySiteSeed[ctx.BaseSeed]);
-        if (newStateAfterCallToSave == pulledBeforeCallStateStr)
+        if (!ctx.Valid) return;
+        var newRandomStateAfterCallToSaveToMap = UnityEngine.Random.state;
+        string newRandomStateAfterCallToSaveToMapStr = JsonUtility.ToJson(newRandomStateAfterCallToSaveToMap);
+        string mapStateBeforeCallStr = JsonUtility.ToJson(_stateBySiteSeed[ctx.BaseSeed]);
+        if (newRandomStateAfterCallToSaveToMapStr == mapStateBeforeCallStr)
         {
-            IShowSeedPlugin.Beep.LogInfo($"\n################################\n unchanged states:\npulledBeforeCall={pulledBeforeCallStateStr}\nnewStateAfterCallToSave={newStateAfterCallToSave}\nsite={GetStackTraceStr(2)}\n\n################################\n");
+            IShowSeedPlugin.Beep.LogInfo($"\n################################\n unchanged states:\n\t mapStateBeforeCall={mapStateBeforeCallStr}\n\t newRandomStateAfterCallToSaveToMap={newRandomStateAfterCallToSaveToMapStr}\n\t site={GetStackTraceStr(2)}\n\n################################\n");
         }
-        _stateBySiteSeed[ctx.BaseSeed] = newState;
+        _stateBySiteSeed[ctx.BaseSeed] = newRandomStateAfterCallToSaveToMap;
         if (GetStackTraceStr(2).Contains("App_PerkPage"))
         {
-            IShowSeedPlugin.Beep.LogWarning($"=========================== ROD exit completed with seed {ctx.BaseSeed} (callNumber={ctx.CallNumber})");
-            IShowSeedPlugin.Beep.LogWarning($"\npulledBeforeCall: {pulledBeforeCallStateStr}\nnewStateAfterCallToSave: {newStateAfterCallToSave}");
-            IShowSeedPlugin.Beep.LogWarning($"new random state map:\n\t{_stateBySiteSeed.Select(kvp => { return $"s={kvp.Key}, r={JsonUtility.ToJson(kvp.Value)}"; }).Join(delimiter: "\n\t")}");
-            IShowSeedPlugin.Beep.LogWarning($"new call number map:\n{JsonConvert.SerializeObject(_cntBySiteSeed)}");
-            IShowSeedPlugin.Beep.LogWarning($"\nsitekey:{GetStackTraceStr(2)}");
+            IShowSeedPlugin.Beep.LogWarning($"===========================\nROD exit completed with seed {ctx.BaseSeed} (callNumber={ctx.CallNumber})\n\tnewRandomStateAfterCallToSaveToMap={newRandomStateAfterCallToSaveToMapStr}\n\tmapStateBeforeCall: {mapStateBeforeCallStr}\n\tctx.PrevRandomState: {JsonUtility.ToJson(ctx.PrevRandomState)}\nnew random state map:\n\t{_stateBySiteSeed.Select(kvp => { return $"s={kvp.Key}, r={JsonUtility.ToJson(kvp.Value)}"; }).Join(delimiter: "\n\t")}\nnew call number map:\n{JsonConvert.SerializeObject(_cntBySiteSeed)}\n\nsitekey: {GetStackTraceStr(2)}\n=============================");
         }
         UnityEngine.Random.state = ctx.PrevRandomState;
         Monitor.Exit(_lock);
@@ -112,6 +112,11 @@ public static class Rod // short for RandomGod
         Monitor.Enter(_lock);
         _stateBySiteSeed.Clear();
         Monitor.Exit(_lock);
+    }
+
+    internal static bool IsEnabled()
+    {
+        return _enabled;
     }
 
     private static string GetStackTraceStr(int frames)

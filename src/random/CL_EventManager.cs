@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using HarmonyLib;
 
-namespace IShowSeed.Patches;
+namespace IShowSeed.Random;
 
 
+[TogglablePatch]
 [HarmonyPatch(typeof(CL_EventManager), "GetPossibleEvents")]
 public static class SpawnSettings_GetPossibleEvents_Patcher
 {

@@ -1,7 +1,8 @@
 using HarmonyLib;
 
-namespace IShowSeed.Patches.UI;
+namespace IShowSeed.Random.UI;
 
+[PermanentPatch]
 [HarmonyPatch(typeof(CL_UIManager), "Update")]
 public static class CL_UIManager_Update_Patcher
 {

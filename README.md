@@ -23,8 +23,16 @@ Seed shown at the end of the run
 
 ## Config
 
+Configs are located in `WhiteKnuckleFolder/BepInEx/Config/shishyando.WK.IShowSeed.cfg`.
+
 #### `PresetSeed` (UI is simpler)
 Preset seed which will be applied to all runs. `0` for random.
+
+#### `Gamemodes`
+You can select the gamemodes which will be affected by the seed. Default is campaign + all endless (including, iron/hard/both)
+
+#### `PersistBetweenGameRestarts`
+If enabled, the seed will be remembered across game restarts. If not, preset seed will be cleared on game restart. Default is `true`.
 
 ## Things to notice
 
