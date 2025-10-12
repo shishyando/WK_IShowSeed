@@ -9,7 +9,7 @@
     <PluginUrl>https://github.com/shishyando/WK_IShowSeed</PluginUrl>
     <DependenciesJson>["BepInEx-BepInExPack-5.4.2100"]</DependenciesJson>
     <ManifestOutput>$(ProjectDir)manifest.json</ManifestOutput>
-    <ZipOutputPath>$(ProjectDir)thunderstore.zip</ZipOutputPath>
+    <ZipOutputPath>$(ProjectDir)IShowSeed.zip</ZipOutputPath>
 
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
@@ -26,6 +26,7 @@
     <PythonCmd Condition="'$(OS)' != 'Windows_NT'">python3</PythonCmd>
     <ThunderstoreScript>$([System.IO.Path]::Combine('$(ProjectDir)','scripts','thunderstore.py'))</ThunderstoreScript>
     <ReadmePath>$([System.IO.Path]::Combine('$(ProjectDir)','README.md'))</ReadmePath>
+    <ChangelogPath>$([System.IO.Path]::Combine('$(ProjectDir)','CHANGELOG.md'))</ChangelogPath>
     <IconPath>$([System.IO.Path]::Combine('$(ProjectDir)','img','icon.png'))</IconPath>
   </PropertyGroup>
 
@@ -81,7 +82,7 @@
   </Target>
 
   <Target Name="ThunderstorePackage" AfterTargets="Build">
-    <Exec Command='$(PythonCmd) "$(ThunderstoreScript)" --out "$(ZipOutputPath)" --readme "$(ReadmePath)" --manifest "$(ManifestOutput)" --icon "$(IconPath)" --dll "$(TargetPath)"' />
+    <Exec Command='$(PythonCmd) "$(ThunderstoreScript)" --out "$(ZipOutputPath)" --readme "$(ReadmePath)" --changelog "$(ChangelogPath)" --manifest "$(ManifestOutput)" --icon "$(IconPath)" --dll "$(TargetPath)"' />
   </Target>
 
 </Project>
