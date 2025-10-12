@@ -54,7 +54,6 @@ public class IShowSeedPlugin : BaseUnityPlugin
         {
             harmony.PatchAll(p);
         }
-        Beep.LogInfo($"Patched: {typeof(T).Name}");
     }
 }
 

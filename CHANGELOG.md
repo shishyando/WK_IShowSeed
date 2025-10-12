@@ -1,4 +1,4 @@
-# Version 1.1.1
+# Version 1.1.2
 ### New update 12 oct 2025
 
 ## Changelog

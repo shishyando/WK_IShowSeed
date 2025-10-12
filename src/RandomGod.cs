@@ -25,7 +25,6 @@ public static class Rod // short for RandomGod
 
     internal static void Enter(ref Context ctx)
     {
-        // IShowSeedPlugin.Beep.LogInfo($"ROD: Enter called");
         if (!_enabled) return;
         ctx = default; 
         ctx.BaseSeed = DeriveSeed(ComputeSiteKey());
@@ -48,29 +47,15 @@ public static class Rod // short for RandomGod
         }
 
         ctx.Valid = true;
-        // IShowSeedPlugin.Beep.LogInfo($"ROD: Enter COMPLETED!, {ctx.SiteKey}");
-        if (GetStackTraceStr(2).Contains("App_PerkPage"))
-        {
-            IShowSeedPlugin.Beep.LogWarning($"...........................\nROD enter started with seed {ctx.BaseSeed} (callNumber={ctx.CallNumber})\n\tctx.PrevRandomState: {JsonUtility.ToJson(ctx.PrevRandomState)}\n\tUnityEngine.Random.state: {JsonUtility.ToJson(UnityEngine.Random.state)}\nnew random state map:\n\t{_stateBySiteSeed.Select(kvp => { return $"s={kvp.Key}, r={JsonUtility.ToJson(kvp.Value)}"; }).Join(delimiter: "\n\t")}\nnew call number map:\n{JsonConvert.SerializeObject(_cntBySiteSeed)}\n\nsitekey: {GetStackTraceStr(2)}\n....................................");
-        }
     }
 
     internal static void Exit(in Context ctx)
     {
-        // IShowSeedPlugin.Beep.LogInfo($"ROD: Exit called, ctx.Valid={ctx.Valid}");
         if (!ctx.Valid) return;
         var newRandomStateAfterCallToSaveToMap = UnityEngine.Random.state;
         string newRandomStateAfterCallToSaveToMapStr = JsonUtility.ToJson(newRandomStateAfterCallToSaveToMap);
         string mapStateBeforeCallStr = JsonUtility.ToJson(_stateBySiteSeed[ctx.BaseSeed]);
-        if (newRandomStateAfterCallToSaveToMapStr == mapStateBeforeCallStr)
-        {
-            IShowSeedPlugin.Beep.LogInfo($"\n################################\n unchanged states:\n\t mapStateBeforeCall={mapStateBeforeCallStr}\n\t newRandomStateAfterCallToSaveToMap={newRandomStateAfterCallToSaveToMapStr}\n\t site={GetStackTraceStr(2)}\n\n################################\n");
-        }
         _stateBySiteSeed[ctx.BaseSeed] = newRandomStateAfterCallToSaveToMap;
-        if (GetStackTraceStr(2).Contains("App_PerkPage"))
-        {
-            IShowSeedPlugin.Beep.LogWarning($"===========================\nROD exit completed with seed {ctx.BaseSeed} (callNumber={ctx.CallNumber})\n\tnewRandomStateAfterCallToSaveToMap={newRandomStateAfterCallToSaveToMapStr}\n\tmapStateBeforeCall: {mapStateBeforeCallStr}\n\tctx.PrevRandomState: {JsonUtility.ToJson(ctx.PrevRandomState)}\nnew random state map:\n\t{_stateBySiteSeed.Select(kvp => { return $"s={kvp.Key}, r={JsonUtility.ToJson(kvp.Value)}"; }).Join(delimiter: "\n\t")}\nnew call number map:\n{JsonConvert.SerializeObject(_cntBySiteSeed)}\n\nsitekey: {GetStackTraceStr(2)}\n=============================");
-        }
         UnityEngine.Random.state = ctx.PrevRandomState;
         Monitor.Exit(_lock);
     }
@@ -78,8 +63,6 @@ public static class Rod // short for RandomGod
     private static string ComputeSiteKey()
     {
         string traceStr = GetStackTraceStr(2);
-        // IShowSeedPlugin.Beep.LogInfo($"ROD: ComputeSiteKey is called");
-
         return traceStr;
     }
 
@@ -90,7 +73,7 @@ public static class Rod // short for RandomGod
 
     internal static void Enable()
     {
-        IShowSeedPlugin.Beep.LogWarning($"\n===========================\n\n\n enable eeeeeNNANABBLLELEE qwe \n\n\n===========================\n");
+        IShowSeedPlugin.Beep.LogInfo($"RandomGod enabled");
         Monitor.Enter(_lock);
         _enabled = true;
         _stateBySiteSeed.Clear();
@@ -99,7 +82,7 @@ public static class Rod // short for RandomGod
 
     internal static void Disable()
     {
-        IShowSeedPlugin.Beep.LogWarning($"\n===========================\n\n\n disable asdasd \n\n\n===========================\n");
+        IShowSeedPlugin.Beep.LogWarning($"RandomGod disabled");
         Monitor.Enter(_lock);
         _enabled = false;
         _stateBySiteSeed.Clear();
@@ -108,7 +91,7 @@ public static class Rod // short for RandomGod
 
     internal static void Reset()
     {
-        IShowSeedPlugin.Beep.LogWarning($"\n===========================\n\n\n reset  RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRReset zxc \n\n\n===========================\n");
+        IShowSeedPlugin.Beep.LogWarning($"RandomGod reset");
         Monitor.Enter(_lock);
         _stateBySiteSeed.Clear();
         Monitor.Exit(_lock);
