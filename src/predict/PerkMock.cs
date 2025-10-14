@@ -1,30 +1,63 @@
 
 using System.Collections.Generic;
+using IShowSeed.Random;
 
 namespace IShowSeed.Prediction;
 
-public class PerkMock
+public struct PredictedPerks
 {
-    public List<string> GeneratedPerkIds = [];
+    public List<string> PerkIds;
+    public List<string> RefreshedPerkIds;
+}
 
-    public void Reset()
+public static class PerkMock
+{
+    public static PredictedPerks Generate(App_PerkPage.PerkPageType perkPageType, string levelName, int minCards, int maxCards)
     {
-        GeneratedPerkIds.Clear();
+        Rod.SwitchToMode(Rod.ERandomMode.Prediction);
+        bool refresh = false;
+        PredictedPerks predictedPerks = new()
+        {
+            PerkIds = [],
+            RefreshedPerkIds = [],
+        };
+
+        for (int refreshIteration = 0; refreshIteration <= 1; ++refreshIteration, refresh = true)
+        {
+            Rod.Context _ = new();
+            Rod.Enter(ref _, $"perkpage_{perkPageType}_{levelName}_{minCards}_{maxCards}_{refresh}");
+
+            List<string> tmp = GenerateInternal(perkPageType, minCards, maxCards, refresh, predictedPerks.PerkIds);
+            if (!refresh)
+            {
+                predictedPerks.PerkIds = [.. tmp];
+            }
+            else
+            {
+                predictedPerks.RefreshedPerkIds = [.. tmp];
+            }
+
+            Rod.Exit(in _);
+        }
+
+        Rod.SwitchToMode(Rod.ERandomMode.Disabled);
+        
+        return predictedPerks;
     }
 
-    public List<string> Generate(bool refresh, int minCards, int maxCards, App_PerkPage.PerkPageType perkPageType)
+    private static List<string> GenerateInternal(App_PerkPage.PerkPageType perkPageType, int minCards, int maxCards, bool refresh, List<string> generatedPerks)
     {
+        List<string> result = [];
         List<string> list = new List<string>();
-        if (GeneratedPerkIds.Count > 0)
+        if (generatedPerks.Count > 0)
         {
-            for (int i = GeneratedPerkIds.Count - 1; i >= 0; i--)
+            for (int i = generatedPerks.Count - 1; i >= 0; i--)
             {
                 if (refresh)
                 {
-                    list.Add(GeneratedPerkIds[i]);
+                    list.Add(generatedPerks[i]);
                 }
             }
-            GeneratedPerkIds.Clear();
         }
         int num = UnityEngine.Random.Range(minCards, maxCards + 1);
         List<Perk> list2 = new List<Perk>();
@@ -68,10 +101,11 @@ public class PerkMock
             {
                 num2++;
                 perk = list2[UnityEngine.Random.Range(0, list2.Count)];
-                if (!perk.CanSpawn())
-                {
-                }
-                else if (perkPageType == App_PerkPage.PerkPageType.unstable)
+                // if (!perk.CanSpawn())
+                // {
+                // }
+                // else
+                if (perkPageType == App_PerkPage.PerkPageType.unstable)
                 {
                     flag = true;
                 }
@@ -81,8 +115,8 @@ public class PerkMock
                 }
             }
             list2.Remove(perk);
-            GeneratedPerkIds.Add(perk.id);
+            result.Add(perk.id);
         }
-        return GeneratedPerkIds;
+        return result;
     }
 }

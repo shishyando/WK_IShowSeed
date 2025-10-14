@@ -1,4 +1,6 @@
 using HarmonyLib;
+using IShowSeed.Prediction;
+using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,7 +36,7 @@ public static class MenuManager_Start_Patcher
         void PatchPrompt(TMP_InputField prompt, TextMeshProUGUI placeholder)
         {
             prompt.onValueChanged = new TMP_InputField.OnChangeEvent();
-            prompt.onValueChanged.AddListener((string _) =>
+            prompt.onValueChanged.AddListener(_ =>
             {
                 buttonText.color = Color.white;
                 buttonText.text = "Save to Config";
@@ -60,6 +62,7 @@ public static class MenuManager_Start_Patcher
                     IShowSeedPlugin.ConfigPresetSeed.Value = newSeed;
                     IShowSeedPlugin.Instance.Config.Save();
                     IShowSeedPlugin.Beep.LogInfo($"Set new seed to {newSeed}");
+                    IShowSeedPlugin.Beep.LogInfo($"Run preview: {JsonConvert.SerializeObject(Vanga.GenerateRouteInfos(newSeed), Formatting.Indented)}");
                     seedWindow.SetActive(false);
                 }
                 else

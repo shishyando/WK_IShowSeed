@@ -1,6 +1,13 @@
 # IShowSeed
 
-Seeded runs are now a thing! Set seed in any gamemode via UI and make your runs consistent.
+Seeded runs are now a thing! Set seed in any gamemode via UI and make your runs consistent. Preview perks for each route via BepInEx logs on seed save. Check out the changelogs for more details.
+
+## TODO
+* Better UI to show the predictions
+* Step-by-step perk prediction? like you choose which route you want, which perk you want, etc.
+* Seed searcher to find a seed with preset perks & artifacts
+* Seeded leaderboards
+
 
 ## UI
 
@@ -34,16 +41,15 @@ You can select the gamemodes which will be affected by the seed. Default is camp
 #### `PersistBetweenGameRestarts`
 If enabled, the seed will be remembered across game restarts. If not, preset seed will be cleared on game restart. Default is `true`.
 
-## Things to notice
+
+## Found a bug? Something is broken?
+
+You can find me on the [official White Knuckle Discord server](https://discord.com/channels/1278757582038630410/1411846375108513924) and provide the info / request any features. You can also make PRs on GitHub. I recommend intense testing via [WorldDumper plugin](https://github.com/shishyando/WK_WorldDumper).
+
+## Technical Details
 
 - Some session events that do not affect gameplay are disabled (all per-second events like announcements that can occur any second)
 - Levels do not flip
 - Some things are spawned by a trigger (e.g. when a player steps into an invisible zone)
     1) They only spawn roaches and hoppers AFAIK, so `UT_TriggerSpawn`s are pretty much harmless
     2) The result relies on the order in which you enter the triggers: you run the same path - you get the same spawns, you go the other way - spawns change.
-- The mod is quite complex. Even though I made a few optimizations and my game runs completely seamlessly, you may encounter lags or FPS. In this case please contact me via official White Knuckle discord server.
-- Even though the mod was tested, you still may encounter a deadlock/game freeze. In this case please contact me via official White Knuckle discord server.
-
-## Found a bug? Something is broken?
-
-You can find me on the official White Knuckle Discord server and provide the info / request any features. You can also make PRs on GitHub. I recommend intense testing via [WorldDumper plugin](https://github.com/shishyando/WK_WorldDumper).
