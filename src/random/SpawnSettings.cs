@@ -24,7 +24,7 @@ public static class SpawnSettings_RandomCheck_Patcher
         }
 
         // get seed, save state, Random.InitState, restore later
-        Rod.Enter(ref __state);
+        Rod.Enter(ref __state, null);
         return true;
     }
 

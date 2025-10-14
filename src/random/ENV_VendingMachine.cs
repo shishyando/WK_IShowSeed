@@ -11,13 +11,19 @@ public static class ENV_VendingMachine_GenerateOptions_Patcher
     public static void Prefix(ref Rod.Context __state, ENV_VendingMachine __instance)
     {
         // get seed, save state, Random.InitState, restore later
-        Rod.Enter(ref __state);
+        Rod.Enter(ref __state, GenerateCustomCallSite(__instance));
         localSeedRef(__instance) = (int)(__state.BaseSeed + __state.CallNumber); // for WorldDumper
     }
 
     public static void Finalizer(ref Rod.Context __state)
     {
         Rod.Exit(in __state);
+    }
+
+    private static string GenerateCustomCallSite(ENV_VendingMachine i)
+    {
+        UnityEngine.Transform tr = i.transform;
+        return $"vendo_{Helpers.LevelOf(tr)}_{tr.position.x:F2}_{tr.position.y:F2}_{tr.position.z:F2}";
     }
 }
 

@@ -2,18 +2,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using HarmonyLib;
-using Newtonsoft.Json;
 using UnityEngine;
 
 namespace IShowSeed.Random;
 
 public static class Rod // short for RandomGod
 {
-    private static readonly object _lock = new();
-    private static readonly Dictionary<int, UnityEngine.Random.State> _stateBySiteSeed = [];
-    private static readonly Dictionary<int, uint> _cntBySiteSeed = [];
-    private static bool _enabled;
+    public enum ERandomMode
+    {
+        Disabled,
+        Enabled,
+        Prediction,
+    }
 
     public struct Context
     {
@@ -23,11 +23,18 @@ public static class Rod // short for RandomGod
         public uint CallNumber;
     }
 
-    internal static void Enter(ref Context ctx)
+    public static ERandomMode Mode = ERandomMode.Disabled;
+
+    private static readonly object _lock = new();
+    private static readonly Dictionary<int, UnityEngine.Random.State> _stateBySiteSeed = [];
+    private static readonly Dictionary<int, uint> _cntBySiteSeed = [];
+    
+
+    internal static void Enter(ref Context ctx, string customCallSite)
     {
-        if (!_enabled) return;
+        if (Mode == ERandomMode.Disabled) return;
         ctx = default; 
-        ctx.BaseSeed = DeriveSeed(ComputeSiteKey());
+        ctx.BaseSeed = DeriveSeed(customCallSite ?? ComputeSiteKey());
         Monitor.Enter(_lock);
         ctx.PrevRandomState = UnityEngine.Random.state;
 
@@ -53,8 +60,6 @@ public static class Rod // short for RandomGod
     {
         if (!ctx.Valid) return;
         var newRandomStateAfterCallToSaveToMap = UnityEngine.Random.state;
-        string newRandomStateAfterCallToSaveToMapStr = JsonUtility.ToJson(newRandomStateAfterCallToSaveToMap);
-        string mapStateBeforeCallStr = JsonUtility.ToJson(_stateBySiteSeed[ctx.BaseSeed]);
         _stateBySiteSeed[ctx.BaseSeed] = newRandomStateAfterCallToSaveToMap;
         UnityEngine.Random.state = ctx.PrevRandomState;
         Monitor.Exit(_lock);
@@ -71,20 +76,16 @@ public static class Rod // short for RandomGod
         return Animator.StringToHash(siteKey) ^ IShowSeedPlugin.StartingSeed;
     }
 
-    internal static void Enable()
+    internal static ERandomMode GetMode()
     {
-        IShowSeedPlugin.Beep.LogInfo($"RandomGod enabled");
-        Monitor.Enter(_lock);
-        _enabled = true;
-        _stateBySiteSeed.Clear();
-        Monitor.Exit(_lock);
+        return Mode;
     }
 
-    internal static void Disable()
+    internal static void SwitchToMode(ERandomMode mode)
     {
-        IShowSeedPlugin.Beep.LogWarning($"RandomGod disabled");
+        IShowSeedPlugin.Beep.LogInfo($"RandomGod switching to {mode}");
         Monitor.Enter(_lock);
-        _enabled = false;
+        Mode = ERandomMode.Enabled;
         _stateBySiteSeed.Clear();
         Monitor.Exit(_lock);
     }
@@ -95,11 +96,6 @@ public static class Rod // short for RandomGod
         Monitor.Enter(_lock);
         _stateBySiteSeed.Clear();
         Monitor.Exit(_lock);
-    }
-
-    internal static bool IsEnabled()
-    {
-        return _enabled;
     }
 
     private static string GetStackTraceStr(int frames)

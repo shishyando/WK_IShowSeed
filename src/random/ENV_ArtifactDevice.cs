@@ -10,7 +10,7 @@ public static class ENV_ArtifactDevice_Start_Patcher
     public static void Prefix(ref Rod.Context __state)
     {
         // get seed, save state, Random.InitState, restore later
-        Rod.Enter(ref __state);
+        Rod.Enter(ref __state, "artifact_device");
     }
 
     public static void Finalizer(ref Rod.Context __state)

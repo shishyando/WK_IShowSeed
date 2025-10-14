@@ -1,3 +1,18 @@
+# Version 1.2.0 Sink update 14 oct 2025
+
+### Changed:
+* Perks on prev version will differ from perks on this version on the same seed
+
+### Bugfixes:
+* Before this update refreshing one perk machine would change the other perk machine's refreshed perks
+* Also before this update if you go through the Sink shortcut, it would matter in which order you access the perk machines (there is 1 unstable and 1 stable perk machine and accessing)
+* Both of these issues are fixed now and you get consistent perks no matter in what order you access the machines
+
+### Todo:
+* Preview perks & artifacts in main menu (maybe even levels?)
+* Seed searcher to find a seed with preset perks & artifacts
+* Seeded leaderboards
+
 # Version 1.1.2
 ### New update 12 oct 2025
 

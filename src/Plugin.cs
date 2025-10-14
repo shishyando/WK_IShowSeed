@@ -72,7 +72,7 @@ public static class SceneManager_LoadScene_Patcher
         if (sceneName == "Main-Menu")
         {
             IShowSeedPlugin.TogglableHarmony.UnpatchSelf();
-            Rod.Disable();
+            Rod.SwitchToMode(Rod.ERandomMode.Disabled);
         }
         
         // apply patches before the first Awake but after the gamemode is known
@@ -80,7 +80,7 @@ public static class SceneManager_LoadScene_Patcher
         {
             if (IShowSeedPlugin.EnabledGamemodes.Contains(CL_GameManager.GetGamemodeName()))
             {
-                if (Rod.IsEnabled())
+                if (Rod.GetMode() == Rod.ERandomMode.Enabled)
                 {
                     IShowSeedPlugin.Beep.LogInfo("Only resetting random on restart, no double patching");
                     Rod.Reset();
@@ -88,7 +88,7 @@ public static class SceneManager_LoadScene_Patcher
                 else
                 {
                     IShowSeedPlugin.Beep.LogInfo("Applying patches for random for the first time");
-                    Rod.Enable();
+                    Rod.SwitchToMode(Rod.ERandomMode.Enabled);
                     IShowSeedPlugin.PatchAllWithAttribute<TogglablePatchAttribute>(IShowSeedPlugin.TogglableHarmony);
                 }
             }
