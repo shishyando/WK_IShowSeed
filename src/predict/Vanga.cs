@@ -35,7 +35,7 @@ public static class Vanga
 
     public static List<RouteInfo> GenerateRouteInfos(int s)
     {
-        IShowSeedPlugin.StartingSeed = s;
+        Plugin.StartingSeed = s;
         return [
             new RouteInfo()
             {

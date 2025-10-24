@@ -21,7 +21,7 @@ public static class MenuManager_Start_Patcher
         TextMeshProUGUI placeholder = seedWindow.transform.Find("Seed Input/Text Area/Placeholder").gameObject.GetComponent<TextMeshProUGUI>();
         if (buttonText == null || seedPrompt == null || button == null || title == null || placeholder == null)
         {
-            IShowSeedPlugin.Beep.LogWarning($"button: {button}\nbuttonText: {buttonText}\nseedPrompt: {seedPrompt}\ntitle: {title}\nplaceholder {placeholder}");
+            Plugin.Beep.LogWarning($"button: {button}\nbuttonText: {buttonText}\nseedPrompt: {seedPrompt}\ntitle: {title}\nplaceholder {placeholder}");
             return;
         }
         PatchTitle(title);
@@ -41,7 +41,7 @@ public static class MenuManager_Start_Patcher
                 buttonText.color = Color.white;
                 buttonText.text = "Save to Config";
             });
-            prompt.text = IShowSeedPlugin.ConfigPresetSeed.Value.ToString();
+            prompt.text = Plugin.ConfigPresetSeed.Value.ToString();
             if (prompt.text == "0")
             {
                 prompt.text = "";
@@ -59,10 +59,10 @@ public static class MenuManager_Start_Patcher
                 bool success = int.TryParse(seedPrompt.text, out int newSeed);
                 if (success || seedPrompt.text == "")
                 {
-                    IShowSeedPlugin.ConfigPresetSeed.Value = newSeed;
-                    IShowSeedPlugin.Instance.Config.Save();
-                    IShowSeedPlugin.Beep.LogInfo($"Set new seed to {newSeed}");
-                    IShowSeedPlugin.Beep.LogInfo($"Run preview: {JsonConvert.SerializeObject(Vanga.GenerateRouteInfos(newSeed), Formatting.Indented)}");
+                    Plugin.ConfigPresetSeed.Value = newSeed;
+                    Plugin.Instance.Config.Save();
+                    Plugin.Beep.LogInfo($"Set new seed to {newSeed}");
+                    Plugin.Beep.LogInfo($"Run preview: {JsonConvert.SerializeObject(Vanga.GenerateRouteInfos(newSeed), Formatting.Indented)}");
                     seedWindow.SetActive(false);
                 }
                 else

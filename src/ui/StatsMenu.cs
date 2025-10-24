@@ -10,7 +10,7 @@ public static class UT_SeededEnable_OnEnable_Patcher
     public static bool Prefix(UT_SeededEnable __instance)
     {
         TextMeshProUGUI text = __instance.gameObject.GetComponent<TextMeshProUGUI>();
-        text.text = $"SEED: {IShowSeedPlugin.StartingSeed}";
+        text.text = $"SEED: {Plugin.StartingSeed}";
         if (WorldLoader.customSeed) {
             text.text = "PRESET " + text.text;
         }

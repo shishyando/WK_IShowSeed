@@ -8,9 +8,9 @@ public static class WorldLoader_Awake_Patcher
 {
     public static void Prefix()
     {
-        WorldLoader.SetPresetSeed(IShowSeedPlugin.ConfigPresetSeed.Value.ToString());
-        IShowSeedPlugin.Beep.LogInfo($"custom preset seed: {IShowSeedPlugin.ConfigPresetSeed.Value}");
-        IShowSeedPlugin.StartingSeed = IShowSeedPlugin.ConfigPresetSeed.Value;
+        WorldLoader.SetPresetSeed(Plugin.ConfigPresetSeed.Value.ToString());
+        Plugin.Beep.LogInfo($"custom preset seed: {Plugin.ConfigPresetSeed.Value}");
+        Plugin.StartingSeed = Plugin.ConfigPresetSeed.Value;
     }
 }
 
@@ -21,6 +21,6 @@ public static class WorldLoader_Initialize_Patcher
 {
     public static void Prefix()
     {
-        IShowSeedPlugin.Beep.LogInfo($"World initializing with seed: {IShowSeedPlugin.ConfigPresetSeed.Value}, resetting random...");
+        Plugin.Beep.LogInfo($"World initializing with seed: {Plugin.ConfigPresetSeed.Value}, resetting random...");
     }
 }
