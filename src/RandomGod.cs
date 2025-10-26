@@ -28,12 +28,12 @@ public static class Rod // short for RandomGod
     private static readonly object _lock = new();
     private static readonly Dictionary<int, UnityEngine.Random.State> _stateBySiteSeed = [];
     private static readonly Dictionary<int, uint> _cntBySiteSeed = [];
-    
+
 
     internal static void Enter(ref Context ctx, string customCallSite)
     {
         if (Mode == ERandomMode.Disabled) return;
-        ctx = default; 
+        ctx = default;
         ctx.BaseSeed = DeriveSeed(customCallSite ?? ComputeSiteKey());
         Monitor.Enter(_lock);
         ctx.PrevRandomState = UnityEngine.Random.state;
@@ -73,7 +73,7 @@ public static class Rod // short for RandomGod
 
     private static int DeriveSeed(string siteKey)
     {
-        return Animator.StringToHash(siteKey) ^ IShowSeedPlugin.StartingSeed;
+        return Animator.StringToHash(siteKey) ^ Plugin.SeedForRandom;
     }
 
     internal static ERandomMode GetMode()
@@ -83,16 +83,16 @@ public static class Rod // short for RandomGod
 
     internal static void SwitchToMode(ERandomMode mode)
     {
-        IShowSeedPlugin.Beep.LogInfo($"RandomGod switching to {mode}");
+        Plugin.Beep.LogInfo($"RandomGod switching to {mode}");
         Monitor.Enter(_lock);
-        Mode = ERandomMode.Enabled;
+        Mode = mode;
         _stateBySiteSeed.Clear();
         Monitor.Exit(_lock);
     }
 
     internal static void Reset()
     {
-        IShowSeedPlugin.Beep.LogWarning($"RandomGod reset");
+        Plugin.Beep.LogWarning($"RandomGod reset");
         Monitor.Enter(_lock);
         _stateBySiteSeed.Clear();
         Monitor.Exit(_lock);

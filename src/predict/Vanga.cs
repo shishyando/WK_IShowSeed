@@ -1,6 +1,5 @@
 
 using System.Collections.Generic;
-using IShowSeed.Random;
 
 namespace IShowSeed.Prediction;
 
@@ -35,7 +34,7 @@ public static class Vanga
 
     public static List<RouteInfo> GenerateRouteInfos(int s)
     {
-        IShowSeedPlugin.StartingSeed = s;
+        Plugin.SeedForRandom = s;
         return [
             new RouteInfo()
             {

@@ -8,20 +8,24 @@ using System.Collections.Generic;
 using System;
 using System.Reflection;
 using System.Linq;
+using System.Net.Http;
 
 namespace IShowSeed;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-public class IShowSeedPlugin : BaseUnityPlugin
+public class Plugin : BaseUnityPlugin
 {
-    internal static IShowSeedPlugin Instance;
+    internal static Plugin Instance;
     internal static ManualLogSource Beep;
+    internal static HttpClient HttpClient = new();
     internal static Harmony TogglableHarmony = new($"{MyPluginInfo.PLUGIN_GUID}.togglable");
     internal static Harmony PermanentHarmony = new($"{MyPluginInfo.PLUGIN_GUID}.permanent");
 
-    internal static int StartingSeed = 0;
+    internal static int SeedForRandom = 0;
     internal static ConfigEntry<int> ConfigPresetSeed;
     internal static ConfigEntry<bool> PersistBetweenGameRestarts;
+    private static ConfigEntry<string> LeaderboardUri;
+    private static ConfigEntry<int> TimeoutSeconds;
     internal static ConfigEntry<string> EnabledGamemodesStr;
     internal static List<string> EnabledGamemodes;
 
@@ -30,18 +34,21 @@ public class IShowSeedPlugin : BaseUnityPlugin
         Instance = this;
         Beep = Logger;
         ConfigPresetSeed = Config.Bind("General", "PresetSeed", 0, "Preset seed, `0` to keep the default behaviour");
+        PersistBetweenGameRestarts = Config.Bind("General", "PersistBetweenGameRestarts", true, "If true, the seed will stay the same even after game restart");
         EnabledGamemodesStr = Config.Bind(
             "General",
             "Gamemodes",
             $"{GamemodesList.GetAllGamemodesStr(true, "|")}",
             $"Gamemodes which should be affected by IShowSeed, separated by `|`. Available values (can append \"-Hardmode\", \"-Iron\" or \"-Hardmode-Iron\"):\n{GamemodesList.GetAllGamemodesStr(false, "\n")}"
         );
-        PersistBetweenGameRestarts = Config.Bind("General", "PersistBetweenGameRestarts", true, "If true, the seed will stay the same even after game restart");
-
         EnabledGamemodes = [.. EnabledGamemodesStr.Value.Split('|')];
+        LeaderboardUri = Config.Bind("Leaderboards", "Uri", "http://128.199.54.23:80", "If you encounter any network problems, make sure you have the latest version of the mod and reset this to default");
+        TimeoutSeconds = Config.Bind("Leaderboards", "TimeoutSeconds", 15, "If this is not enough, either the server is down or you have network issues");
+
 
         PatchAllWithAttribute<PermanentPatchAttribute>(PermanentHarmony);
-
+        HttpClient.BaseAddress = new Uri(LeaderboardUri.Value);
+        HttpClient.Timeout = TimeSpan.FromSeconds(TimeoutSeconds.Value);
         Beep.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");
     }
 
@@ -64,37 +71,37 @@ public static class SceneManager_LoadScene_Patcher
 {
     public static void Prefix(string sceneName)
     {
-        if (sceneName == "Intro" && !IShowSeedPlugin.PersistBetweenGameRestarts.Value)
+        if (sceneName == "Intro" && !Plugin.PersistBetweenGameRestarts.Value)
         {
-            IShowSeedPlugin.ConfigPresetSeed.Value = 0;
-            IShowSeedPlugin.Beep.LogInfo("PersistBetweenGameRestarts is false, clearing the preset seed");
+            Plugin.ConfigPresetSeed.Value = 0;
+            Plugin.Beep.LogInfo("PersistBetweenGameRestarts is false, clearing the preset seed");
         }
         if (sceneName == "Main-Menu")
         {
-            IShowSeedPlugin.TogglableHarmony.UnpatchSelf();
+            Plugin.TogglableHarmony.UnpatchSelf();
             Rod.SwitchToMode(Rod.ERandomMode.Disabled);
         }
-        
+
         // apply patches before the first Awake but after the gamemode is known
         if (sceneName == "Game-Main")
         {
-            if (IShowSeedPlugin.EnabledGamemodes.Contains(CL_GameManager.GetGamemodeName()))
+            if (Plugin.EnabledGamemodes.Contains(CL_GameManager.GetGamemodeName()))
             {
                 if (Rod.GetMode() == Rod.ERandomMode.Enabled)
                 {
-                    IShowSeedPlugin.Beep.LogInfo("Only resetting random on restart, no double patching");
+                    Plugin.Beep.LogInfo("Only resetting random on restart, no double patching");
                     Rod.Reset();
                 }
                 else
                 {
-                    IShowSeedPlugin.Beep.LogInfo("Applying patches for random for the first time");
+                    Plugin.Beep.LogInfo("Applying patches for random for the first time");
                     Rod.SwitchToMode(Rod.ERandomMode.Enabled);
-                    IShowSeedPlugin.PatchAllWithAttribute<TogglablePatchAttribute>(IShowSeedPlugin.TogglableHarmony);
+                    Plugin.PatchAllWithAttribute<TogglablePatchAttribute>(Plugin.TogglableHarmony);
                 }
             }
             else
             {
-                IShowSeedPlugin.Beep.LogInfo($"Gamemode `{CL_GameManager.GetGamemodeName()}` is not enabled in IShowSeed's configs, not doing anything");
+                Plugin.Beep.LogInfo($"Gamemode `{CL_GameManager.GetGamemodeName()}` is not enabled in IShowSeed's configs, not doing anything");
             }
         }
     }

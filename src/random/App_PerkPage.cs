@@ -18,7 +18,7 @@ public static class App_PerkPage_GenerateCards_Patcher
         seedRef(osRef(__instance).worldInterface) = -1; // so it does not call Random.InitState inside
     }
 
-    public static void Finalizer(ref Rod.Context __state, App_PerkPage __instance)
+    public static void Postfix(ref Rod.Context __state, App_PerkPage __instance)
     {
         seedRef(osRef(__instance).worldInterface) = (int)(__state.BaseSeed + __state.CallNumber); // for WorldDumper
         Rod.Exit(in __state);

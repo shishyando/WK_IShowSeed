@@ -48,7 +48,7 @@ public static class PerkMock
     private static List<string> GenerateInternal(App_PerkPage.PerkPageType perkPageType, int minCards, int maxCards, bool refresh, List<string> generatedPerks)
     {
         List<string> result = [];
-        List<string> list = new List<string>();
+        List<string> list = [];
         if (generatedPerks.Count > 0)
         {
             for (int i = generatedPerks.Count - 1; i >= 0; i--)
@@ -60,8 +60,7 @@ public static class PerkMock
             }
         }
         int num = UnityEngine.Random.Range(minCards, maxCards + 1);
-        List<Perk> list2 = new List<Perk>();
-        list2.AddRange(CL_AssetManager.GetFullCombinedAssetDatabase().perkAssets);
+        List<Perk> list2 = [.. CL_AssetManager.GetFullCombinedAssetDatabase().perkAssets];
         int j = list2.Count - 1;
         while (j >= 0)
         {
