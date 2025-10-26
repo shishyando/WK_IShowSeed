@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System;
 using System.Reflection;
 using System.Linq;
+using System.Net.Http;
 
 namespace IShowSeed;
 
@@ -16,13 +17,15 @@ public class Plugin : BaseUnityPlugin
 {
     internal static Plugin Instance;
     internal static ManualLogSource Beep;
-    internal static HttpClient HttpClient = new HttpClient();
+    internal static HttpClient HttpClient = new();
     internal static Harmony TogglableHarmony = new($"{MyPluginInfo.PLUGIN_GUID}.togglable");
     internal static Harmony PermanentHarmony = new($"{MyPluginInfo.PLUGIN_GUID}.permanent");
 
-    internal static int StartingSeed = 0;
+    internal static int SeedForRandom = 0;
     internal static ConfigEntry<int> ConfigPresetSeed;
     internal static ConfigEntry<bool> PersistBetweenGameRestarts;
+    private static ConfigEntry<string> LeaderboardUri;
+    private static ConfigEntry<int> TimeoutSeconds;
     internal static ConfigEntry<string> EnabledGamemodesStr;
     internal static List<string> EnabledGamemodes;
 
@@ -39,10 +42,13 @@ public class Plugin : BaseUnityPlugin
             $"Gamemodes which should be affected by IShowSeed, separated by `|`. Available values (can append \"-Hardmode\", \"-Iron\" or \"-Hardmode-Iron\"):\n{GamemodesList.GetAllGamemodesStr(false, "\n")}"
         );
         EnabledGamemodes = [.. EnabledGamemodesStr.Value.Split('|')];
+        LeaderboardUri = Config.Bind("Leaderboards", "Uri", "http://128.199.54.23:80", "If you encounter any network problems, make sure you have the latest version of the mod and reset this to default");
+        TimeoutSeconds = Config.Bind("Leaderboards", "TimeoutSeconds", 15, "If this is not enough, either the server is down or you have network issues");
+
 
         PatchAllWithAttribute<PermanentPatchAttribute>(PermanentHarmony);
-        HttpClient.BaseAddress = new Uri("qwe");
-        HttpClient.Timeout = TimeSpan.FromSeconds(15);
+        HttpClient.BaseAddress = new Uri(LeaderboardUri.Value);
+        HttpClient.Timeout = TimeSpan.FromSeconds(TimeoutSeconds.Value);
         Beep.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");
     }
 

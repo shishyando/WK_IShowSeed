@@ -10,7 +10,7 @@ public static class WorldLoader_Awake_Patcher
     {
         WorldLoader.SetPresetSeed(Plugin.ConfigPresetSeed.Value.ToString());
         Plugin.Beep.LogInfo($"custom preset seed: {Plugin.ConfigPresetSeed.Value}");
-        Plugin.StartingSeed = Plugin.ConfigPresetSeed.Value;
+        Plugin.SeedForRandom = Plugin.ConfigPresetSeed.Value;
     }
 }
 

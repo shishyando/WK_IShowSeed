@@ -73,7 +73,7 @@ public static class Rod // short for RandomGod
 
     private static int DeriveSeed(string siteKey)
     {
-        return Animator.StringToHash(siteKey) ^ Plugin.StartingSeed;
+        return Animator.StringToHash(siteKey) ^ Plugin.SeedForRandom;
     }
 
     internal static ERandomMode GetMode()
@@ -85,7 +85,7 @@ public static class Rod // short for RandomGod
     {
         Plugin.Beep.LogInfo($"RandomGod switching to {mode}");
         Monitor.Enter(_lock);
-        Mode = ERandomMode.Enabled;
+        Mode = mode;
         _stateBySiteSeed.Clear();
         Monitor.Exit(_lock);
     }

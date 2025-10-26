@@ -1,31 +1,32 @@
 # IShowSeed
 
-Seeded runs are now a thing! Set seed in any gamemode via UI and make your runs consistent. Preview perks for each route via BepInEx logs on seed save. Check out the changelogs for more details.
+Seeded runs, now with leaderboards! Set seed in any gamemode via UI and make your runs consistent. Preview perks for each route via BepInEx logs on seed save. Check out the changelog for more details.
 
 ## TODO
 * Better UI to show the predictions
 * Step-by-step perk prediction? like you choose which route you want, which perk you want, etc.
 * Seed searcher to find a seed with preset perks & artifacts
-* Seeded leaderboards
-
 
 ## UI
 
 Press `ctrl + shift + S` at the main menu to set or clear the seed
 <div align="left">
-<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/menu.jpg" style="width: 538px; height: 410px; object-fit: contain;">
+<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/menu.jpg" style="width: 800px; object-fit: contain;">
 </div>
 
+Seed is shown at the end of the run and leaderboards are updated
+<div align="left">
+<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/stats.jpg" style="width: 800px; object-fit: contain;">
+</div>
+
+Leaderboards are also updated before the run
+<div align="left">
+<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/leaderboards.jpg" style="width: 800px; object-fit: contain;">
+</div>
 
 View seed ingame via Debug Menu (`F5`)
 <div align="left">
-<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/debug.jpg" style="width: 538px; height: 410px; object-fit: contain;">
-</div>
-
-
-Seed shown at the end of the run
-<div align="left">
-<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/stats.jpg" style="width: 538px; height: 410px; object-fit: contain;">
+<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/debug.jpg" style="width: 800px; object-fit: contain;">
 </div>
 
 ## Config
@@ -41,6 +42,11 @@ You can select the gamemodes which will be affected by the seed. Default is camp
 #### `PersistBetweenGameRestarts`
 If enabled, the seed will be remembered across game restarts. If not, preset seed will be cleared on game restart. Default is `true`.
 
+### `Uri`
+Uri for leaderboards sync. In case of any leaderboard issues, try downloading the latest version of the mod and restting this setting to default (done via editing the config).
+
+### `TimeoutSeconds`
+Timeout for all leaderboards requests. The server should respond fast enough, so in case of any issues check [Uri description](#uri)
 
 ## Found a bug? Something is broken?
 

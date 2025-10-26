@@ -1,3 +1,19 @@
+# Version 1.4.0 Leaderboards update 26/oct/25
+
+### Added:
+* Seeded leaderboards
+<div align="left">
+<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/stats.jpg" style="width: 400px; object-fit: contain;">
+</div>
+
+### Bugfixes:
+* Apparently nothing worked since 1.2.0 sink update? Should be fixed now.
+
+### TODO
+* Better UI to show the predictions
+* Step-by-step perk prediction? like you choose which route you want, which perk you want, etc.
+* Seed searcher to find a seed with preset perks & artifacts
+
 # Version 1.3.0 Predictions update (preview) 14/oct/25
 
 ### Added:
