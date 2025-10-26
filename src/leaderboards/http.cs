@@ -25,9 +25,9 @@ public static class LeaderboardManager
         return JsonConvert.DeserializeObject<List<LeaderboardEntry>>(res);
     }
 
-    public static async void UploadScore(string gamemode, int seed, float score, float time, bool iron, bool hardmode)
+    public static async void UploadScore(string gamemode, int seed, float score, float time, bool iron, bool hardmode, bool finished)
     {
-        Plugin.Beep.LogWarning($"Upload score called, gamemode={gamemode}, seed={seed}, score={score}, time={time}, iron={iron}, hardmode={hardmode}");
+        Plugin.Beep.LogWarning($"Upload score called, gamemode={gamemode}, seed={seed}, score={score}, time={time}, iron={iron}, hardmode={hardmode}, finished={finished}");
         using StringContent jsonContent = new(JsonConvert.SerializeObject(new Dictionary<string, object>
         {
             { "gamemode", gamemode },
@@ -36,13 +36,19 @@ public static class LeaderboardManager
             { "time", Mathf.FloorToInt(Mathf.Clamp(time, 0f, 2.1474836E+09f)) },
             { "score", Mathf.FloorToInt(Mathf.Clamp(score, 0f, 2.1474836E+09f)) },
             { "iron", iron },
-            { "hardmode", hardmode }
+            { "hardmode", hardmode },
+            { "finished", finished }
         }, 0), Encoding.UTF8, "application/json");
-        (await Plugin.HttpClient.PostAsync("uploadscore", jsonContent)).EnsureSuccessStatusCode();
+        using HttpResponseMessage response = await Plugin.HttpClient.PostAsync("uploadscore", jsonContent);
+        if (!response.IsSuccessStatusCode)
+        {
+            Plugin.Beep.LogError(response);
+            response.EnsureSuccessStatusCode();
+        }
         Plugin.Beep.LogInfo($"OK: {jsonContent}");
     }
 
-    public record LeaderboardEntry(string steamid, int rank, int score, int time, int seed, bool hardmode, bool iron);
+    public record LeaderboardEntry(string steamid, int rank, int score, int time, int seed, bool hardmode, bool iron, bool finished);
 }
 
 

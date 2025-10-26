@@ -22,7 +22,8 @@ public static class M_Gamemode_Finish_Patcher
                 banned ? 0f : __instance.GetPlayerScore(hasFinished),
                 time,
                 __instance.IsIronKnuckle(),
-                __instance.allowHardmode && CL_GameManager.IsHardmode()
+                __instance.allowHardmode && CL_GameManager.IsHardmode(),
+                hasFinished
             );
         }
         catch (System.Exception e)
