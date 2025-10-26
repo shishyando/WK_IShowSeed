@@ -1,3 +1,14 @@
+# Version 1.4.1 Leaderboards update 26/oct/25
+
+### Added:
+* Seeded leaderboards
+<div align="left">
+<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/stats.jpg" style="width: 400px; object-fit: contain;">
+</div>
+
+### Bugfixes:
+* Sorting by time was just... sorting all runs by time. Now it shows only finished runs.
+
 # Version 1.4.0 Leaderboards update 26/oct/25
 
 ### Added:
