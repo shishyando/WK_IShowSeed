@@ -24,7 +24,7 @@ namespace IShowSeed
             try
             {
                 // XXX: add toggle to filter by seed
-                OverrideLeaderboardsAsync(__instance);
+                _ = OverrideLeaderboardsAsync(__instance);
             }
             catch (Exception e)
             {
