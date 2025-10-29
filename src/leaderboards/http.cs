@@ -12,7 +12,6 @@ public static class LeaderboardManager
     public static async Task<List<LeaderboardEntry>> FetchLeaderboards(string gamemode, Leaderboard_Panel.ScoreType scoreType, int limit = 10, string steamid = "")
     {
         string endpoint = string.Format($"getstats?gamemode={gamemode}&limit={limit}&sortby={scoreType}&steamid={steamid}");
-        Plugin.Beep.LogWarning($"fetching leaderboards: {endpoint}");
 
         using HttpResponseMessage response = await Plugin.HttpClient.GetAsync(endpoint);
         if (!response.IsSuccessStatusCode)
@@ -21,13 +20,12 @@ public static class LeaderboardManager
             response.EnsureSuccessStatusCode();
         }
         string res = await response.Content.ReadAsStringAsync();
-        Plugin.Beep.LogInfo($"OK: {res}");
         return JsonConvert.DeserializeObject<List<LeaderboardEntry>>(res);
     }
 
     public static async void UploadScore(string gamemode, int seed, float score, float time, bool iron, bool hardmode, bool finished)
     {
-        Plugin.Beep.LogWarning($"Upload score called, gamemode={gamemode}, seed={seed}, score={score}, time={time}, iron={iron}, hardmode={hardmode}, finished={finished}");
+        Plugin.Beep.LogWarning($"Uploading run info: gamemode={gamemode}, seed={seed}, score={score}, time={time}, iron={iron}, hardmode={hardmode}, finished={finished}");
         using StringContent jsonContent = new(JsonConvert.SerializeObject(new Dictionary<string, object>
         {
             { "gamemode", gamemode },
@@ -45,7 +43,6 @@ public static class LeaderboardManager
             Plugin.Beep.LogError(response);
             response.EnsureSuccessStatusCode();
         }
-        Plugin.Beep.LogInfo($"OK: {jsonContent}");
     }
 
     public record LeaderboardEntry(string steamid, int rank, int score, int time, int seed, bool hardmode, bool iron, bool finished);

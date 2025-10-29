@@ -83,7 +83,10 @@ public static class Rod // short for RandomGod
 
     internal static void SwitchToMode(ERandomMode mode)
     {
-        Plugin.Beep.LogInfo($"RandomGod switching to {mode}");
+        if (Mode != ERandomMode.Prediction && mode != ERandomMode.Prediction) // less log spam
+        {
+            Plugin.Beep.LogInfo($"RandomGod switching to {mode}");
+        }
         Monitor.Enter(_lock);
         Mode = mode;
         _stateBySiteSeed.Clear();

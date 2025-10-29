@@ -1,11 +1,10 @@
 # IShowSeed
 
-Seeded runs, now with leaderboards! Set seed in any gamemode via UI and make your runs consistent. Preview perks for each route via BepInEx logs on seed save. Check out the changelog for more details.
+Seeded runs, now with leaderboards! Set seed in any gamemode via UI and make your runs consistent. Search seeds with desired perks. Preview perks before run.
 
 ## TODO
-* Better UI to show the predictions
-* Step-by-step perk prediction? like you choose which route you want, which perk you want, etc.
-* Seed searcher to find a seed with preset perks & artifacts
+* Predictions UI (currently predictions are only dumped in BepInEx logs)
+* Seed search UI (currently done via plugin config + BepInEx logs on game startup)
 
 ## UI
 
@@ -33,24 +32,33 @@ View seed ingame via Debug Menu (`F5`)
 
 Configs are located in `WhiteKnuckleFolder/BepInEx/Config/shishyando.WK.IShowSeed.cfg`.
 
-### `PresetSeed` (UI is simpler)
+### `General.PresetSeed` (UI is simpler)
 Preset seed which will be applied to all runs. `0` for random.
 
-### `Gamemodes`
+### `General.Gamemodes`
 You can select the gamemodes which will be affected by the seed. Default is campaign + all endless (including, iron/hard/both)
 
-### `PersistBetweenGameRestarts`
+### `General.PersistBetweenGameRestarts`
 If enabled, the seed will be remembered across game restarts. If not, preset seed will be cleared on game restart. Default is `true`.
 
-### `Uri`
+### `Leaderboards.Uri`
 Uri for leaderboards sync. In case of any leaderboard issues, try downloading the latest version of the mod and restting this setting to default (done via editing the config).
 
-### `TimeoutSeconds`
+### `Leaderboards.TimeoutSeconds`
 Timeout for all leaderboards requests. The server should respond fast enough, so in case of any issues check [Uri description](#uri)
+
+### `SeedSearch.DesiredRouteDescription`
+Describe which route you want to go and which perks you want to get in the config and IShowSeed will search for suitable seeds.
+
+### `SeedSearch.MinSeed`
+Min seed for seed search.
+
+### `SeedSearch.MaxSeed`
+Max seed for seed search. Do not make seed search range too big or your game will load forever, 10000 range should be fine.
 
 ## Found a bug? Something is broken?
 
-You can find me on the [official White Knuckle Discord server](https://discord.com/channels/1278757582038630410/1411846375108513924) and provide the info / request any features. You can also make PRs on GitHub. I recommend intense testing via [WorldDumper plugin](https://github.com/shishyando/WK_WorldDumper).
+You can find me on the [official White Knuckle Discord server](https://discord.com/channels/1278757582038630410/1411846375108513924) and provide the info / request any features. You can also make PRs on GitHub. I recommend intense testing via [WorldDumper plugin](https://github.com/shishyando/WK_WorldDumper) and WinMerge if you change how random works.
 
 ## Technical Details
 

@@ -9,25 +9,35 @@ using System;
 using System.Reflection;
 using System.Linq;
 using System.Net.Http;
+using IShowSeed.Prediction;
+using System.Runtime.CompilerServices;
 
 namespace IShowSeed;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BaseUnityPlugin
 {
+    // Internal
     internal static Plugin Instance;
     internal static ManualLogSource Beep;
     internal static HttpClient HttpClient = new();
     internal static Harmony TogglableHarmony = new($"{MyPluginInfo.PLUGIN_GUID}.togglable");
     internal static Harmony PermanentHarmony = new($"{MyPluginInfo.PLUGIN_GUID}.permanent");
 
+    // Logic
     internal static int SeedForRandom = 0;
+    private static bool OnStartupDone = false;
+
+    // Configs
     internal static ConfigEntry<int> ConfigPresetSeed;
     internal static ConfigEntry<bool> PersistBetweenGameRestarts;
     private static ConfigEntry<string> LeaderboardUri;
     private static ConfigEntry<int> TimeoutSeconds;
     internal static ConfigEntry<string> EnabledGamemodesStr;
     internal static List<string> EnabledGamemodes;
+    private static ConfigEntry<string> DesiredRouteDescription;
+    private static ConfigEntry<int> SeedSearchMin;
+    private static ConfigEntry<int> SeedSearchMax;
 
     private void Awake()
     {
@@ -44,8 +54,11 @@ public class Plugin : BaseUnityPlugin
         EnabledGamemodes = [.. EnabledGamemodesStr.Value.Split('|')];
         LeaderboardUri = Config.Bind("Leaderboards", "Uri", "http://128.199.54.23:80", "If you encounter any network problems, make sure you have the latest version of the mod and reset this to default");
         TimeoutSeconds = Config.Bind("Leaderboards", "TimeoutSeconds", 15, "If this is not enough, either the server is down or you have network issues");
+        DesiredRouteDescription = Config.Bind("SeedSearch", "DesiredRouteDescription", "shortcut_burner: perk_u_t2_adoptionday, perk_metabolicstasis, perk_rabbitdna", "Format: `{route name}: {unstable_perk1}, {perk2}, {perk3}`, available route names: `default`, `shortcut_sink`, `shortcut_burner`");
+        SeedSearchMin = Config.Bind("SeedSearch", "MinSeed", 3665, "Min seed for desired route search");
+        SeedSearchMax = Config.Bind("SeedSearch", "MaxSeed", 3665, "Max seed for desired route search, do not make this range too big or your game will load forever");
 
-
+        SceneManager.sceneLoaded += OnGameStartup;
         PatchAllWithAttribute<PermanentPatchAttribute>(PermanentHarmony);
         HttpClient.BaseAddress = new Uri(LeaderboardUri.Value);
         HttpClient.Timeout = TimeSpan.FromSeconds(TimeoutSeconds.Value);
@@ -62,6 +75,57 @@ public class Plugin : BaseUnityPlugin
             harmony.PatchAll(p);
         }
     }
+
+    public void OnGameStartup(Scene scene, LoadSceneMode _)
+    {
+        if (scene.name != "Main-Menu" || OnStartupDone) return;
+        OnStartupDone = true;
+
+        if (!PersistBetweenGameRestarts.Value)
+        {
+            ConfigPresetSeed.Value = 0;
+            Beep.LogInfo("PersistBetweenGameRestarts is false, clearing the preset seed");
+        }
+        if (!string.IsNullOrWhiteSpace(DesiredRouteDescription.Value))
+        {
+            const int RequiredPerkCount = 3;
+            var validRoutes = new HashSet<string> { "default", "shortcut_sink", "shortcut_burner" };
+            
+            var parts = DesiredRouteDescription.Value.Split(':');
+            if (parts.Length == 0)
+            {
+                Beep.LogWarning($"Invalid DesiredRouteDescription format: '{DesiredRouteDescription.Value}'. Expected format: '{{route}}: {{perk1}}, {{perk2}}, {{perk3}}'");
+                return;
+            }
+            
+            string routeName = parts[0].Trim().ToLower();
+            string[] perks = parts.Length >= 2 ? [.. parts[1].Split(',').Select(p => p.Trim().ToLower())] : [];
+            if (!validRoutes.Contains(routeName))
+            {
+                Beep.LogWarning($"Invalid desired route name: '{routeName}'. Valid routes are: {string.Join(", ", validRoutes)}");
+                return;
+            }
+            
+            if (perks.Length != RequiredPerkCount)
+            {
+                Beep.LogWarning($"Invalid desired perk count: {perks.Length}. Expected exactly {RequiredPerkCount} perks but got: {string.Join(", ", perks)}");
+                return;
+            }
+
+            Beep.LogInfo($"Searching desired route: {routeName}, perks: {string.Join(", ", perks)}");
+            
+            for (int seed = SeedSearchMin.Value; seed <= SeedSearchMax.Value; ++seed)
+            {
+                Vanga.RouteInfo prediction = Vanga.GenerateRouteInfos(seed).First(x => x.RouteName == routeName);
+                if (prediction.PerkMachines[0].PredictedPerks.PerkIds.Contains(perks[0]) &&
+                    prediction.PerkMachines[1].PredictedPerks.PerkIds.Contains(perks[1]) &&
+                    prediction.PerkMachines[2].PredictedPerks.PerkIds.Contains(perks[2]))
+                {
+                    Beep.LogInfo($"Found suitable seed: {seed}");
+                }
+            }
+        }
+    }
 }
 
 
@@ -71,11 +135,6 @@ public static class SceneManager_LoadScene_Patcher
 {
     public static void Prefix(string sceneName)
     {
-        if (sceneName == "Intro" && !Plugin.PersistBetweenGameRestarts.Value)
-        {
-            Plugin.ConfigPresetSeed.Value = 0;
-            Plugin.Beep.LogInfo("PersistBetweenGameRestarts is false, clearing the preset seed");
-        }
         if (sceneName == "Main-Menu")
         {
             Plugin.TogglableHarmony.UnpatchSelf();

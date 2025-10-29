@@ -60,7 +60,7 @@ public static class PerkMock
             }
         }
         int num = UnityEngine.Random.Range(minCards, maxCards + 1);
-        List<Perk> list2 = [.. CL_AssetManager.GetFullCombinedAssetDatabase().perkAssets];
+        List<Perk> list2 = [.. Helpers.GetAllPerks()];
         int j = list2.Count - 1;
         while (j >= 0)
         {

@@ -27,6 +27,7 @@ public static class MenuManager_Start_Patcher
         PatchTitle(title);
         PatchPrompt(seedPrompt, placeholder);
         PatchButton(button);
+        // CreatePreviewButton(seedWindow, seedPrompt);
 
         void PatchTitle(TextMeshProUGUI title)
         {
@@ -51,6 +52,15 @@ public static class MenuManager_Start_Patcher
 
         void PatchButton(Button button)
         {
+            // // Don't change position, just make it narrower
+            // RectTransform buttonRect = button.GetComponent<RectTransform>();
+            // if (buttonRect != null)
+            // {
+            //     float originalWidth = buttonRect.sizeDelta.x;
+            //     float newWidth = originalWidth * 0.65f; // Make it 65% of original width
+            //     buttonRect.sizeDelta = new Vector2(newWidth, buttonRect.sizeDelta.y);
+            // }
+            
             buttonText.color = Color.grey;
             buttonText.text = "Save to Config";
             button.onClick = new Button.ButtonClickedEvent();
@@ -72,6 +82,46 @@ public static class MenuManager_Start_Patcher
                 }
             });
         }
+        
+        // void CreatePreviewButton(GameObject seedWindow, TMP_InputField seedPrompt)
+        // {
+        //     // Initialize RouteInfoWindow if not already done
+            
+        //     // Get the Exit button (which is now narrower)
+        //     GameObject exitButton = seedWindow.transform.Find("Tab Selection Hor/Exit").gameObject;
+        //     RectTransform exitRect = exitButton.GetComponent<RectTransform>();
+            
+        //     // Create preview button next to the Exit button
+        //     GameObject previewButtonObj = Object.Instantiate(exitButton, exitButton.transform.parent);
+        //     previewButtonObj.name = "PreviewButton";
+            
+        //     RectTransform previewRect = previewButtonObj.GetComponent<RectTransform>();
+        //     previewRect.sizeDelta = new Vector2(exitRect.sizeDelta.x / 2, exitRect.sizeDelta.y);
+            
+        //     // Position it to the right of the Exit button with some spacing
+        //     previewRect.anchoredPosition = exitRect.anchoredPosition + new Vector2(exitRect.sizeDelta.x + 1, 0);
+            
+        //     // Update button text to "preview"
+        //     TextMeshProUGUI previewText = previewButtonObj.transform.Find("Text (TMP)").gameObject.GetComponent<TextMeshProUGUI>();
+        //     if (previewText != null)
+        //     {
+        //         previewText.text = "preview";
+        //     }
+            
+        //     // Set up button click handler
+        //     Button previewButton = previewButtonObj.GetComponent<Button>();
+        //     if (previewButton != null)
+        //     {
+        //         previewButton.onClick = new Button.ButtonClickedEvent();
+        //         previewButton.onClick.AddListener(() =>
+        //         {
+        //             if (int.TryParse(seedPrompt.text, out int enteredSeed))
+        //             {
+                        
+        //             }
+        //         });
+        //     }
+        // }
     }
 
 }

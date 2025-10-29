@@ -1,3 +1,19 @@
+# Version 1.5.0 Seed search update 30/oct/25
+
+### Added:
+* Seed search via config:
+```
+# Format: `{route name}: {unstable_perk1}, {perk2}, {perk3}`, available route names: `default`, `shortcut_sink`, `shortcut_burner`
+DesiredRouteDescription = shortcut_burner: perk_u_t2_adoptionday, perk_metabolicstasis, perk_rabbitdna
+```
+
+### Changed:
+* Plugin now produces less log spam
+
+### Bugfixes:
+* `General.PersistBetweenGameRestarts = false` could work improperly keeping your seed set, should be fixed
+
+
 # Version 1.4.1 Leaderboards update 26/oct/25
 
 ### Added:
