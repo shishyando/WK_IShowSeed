@@ -42,7 +42,7 @@ You can select the gamemodes which will be affected by the seed. Default is camp
 If enabled, the seed will be remembered across game restarts. If not, preset seed will be cleared on game restart. Default is `true`.
 
 ### `Leaderboards.Uri`
-Uri for leaderboards sync. In case of any leaderboard issues, try downloading the latest version of the mod and restting this setting to default (done via editing the config).
+Override server for leaderboards sync. In case of any leaderboards issues, try downloading the latest version of the mod. Invalid overrides are automatically reset to best default server. Valid overrides stay.
 
 ### `Leaderboards.TimeoutSeconds`
 Timeout for all leaderboards requests. The server should respond fast enough, so in case of any issues check [Uri description](#uri)

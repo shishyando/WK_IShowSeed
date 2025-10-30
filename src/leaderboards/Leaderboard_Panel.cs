@@ -16,7 +16,7 @@ namespace IShowSeed
 
         public static bool Prefix(Leaderboard_Panel __instance)
         {
-            if (Plugin.ConfigPresetSeed.Value == 0)
+            if (Plugin.ConfigPresetSeed.Value == 0 || !MasterServer.Initialized)
             {
                 return true;
             }
@@ -45,15 +45,15 @@ namespace IShowSeed
             {
                 scoreObjects[j].gameObject.SetActive(false);
             }
-            List<LeaderboardManager.LeaderboardEntry> lbScores = null;
+            List<MasterServer.LeaderboardEntry> lbScores = null;
             if (__instance.defaultType == Leaderboard_Panel.LeaderboardType.top)
             {
-                lbScores = await LeaderboardManager.FetchLeaderboards(leaderboardsName, __instance.scoreType, __instance.scoresToPull);
+                lbScores = await MasterServer.FetchLeaderboards(leaderboardsName, __instance.scoreType, __instance.scoresToPull);
             }
             else if (__instance.defaultType == Leaderboard_Panel.LeaderboardType.friendsOnly || __instance.defaultType == Leaderboard_Panel.LeaderboardType.surrounding)
             {
-                lbScores = await LeaderboardManager.FetchLeaderboards(leaderboardsName, __instance.scoreType, __instance.scoresToPull, steamid: SteamClient.SteamId.Value.ToString());
-                lbScores ??= await LeaderboardManager.FetchLeaderboards(leaderboardsName, __instance.scoreType, __instance.scoresToPull);
+                lbScores = await MasterServer.FetchLeaderboards(leaderboardsName, __instance.scoreType, __instance.scoresToPull, steamid: SteamClient.SteamId.Value.ToString());
+                lbScores ??= await MasterServer.FetchLeaderboards(leaderboardsName, __instance.scoreType, __instance.scoresToPull);
             }
 
             for (int i = 0; i < scoreObjects.Count; i++)

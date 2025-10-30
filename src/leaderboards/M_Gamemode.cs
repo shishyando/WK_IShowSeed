@@ -16,7 +16,7 @@ public static class M_Gamemode_Finish_Patcher
         bool banned = (!__instance.allowCheatedScores && CommandConsole.hasCheated) || (!__instance.allowCheatedScores && !CL_GameManager.AreAchievementsAllowed());
         try
         {
-            LeaderboardManager.UploadScore(
+            MasterServer.UploadScore(
                 __instance.GetGamemodeName(),
                 Plugin.SeedForRandom,
                 banned ? 0f : __instance.GetPlayerScore(hasFinished),

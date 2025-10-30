@@ -5,12 +5,7 @@ using BepInEx.Configuration;
 using UnityEngine.SceneManagement;
 using IShowSeed.Random;
 using System.Collections.Generic;
-using System;
-using System.Reflection;
-using System.Linq;
-using System.Net.Http;
 using IShowSeed.Prediction;
-using System.Runtime.CompilerServices;
 
 namespace IShowSeed;
 
@@ -20,7 +15,6 @@ public class Plugin : BaseUnityPlugin
     // Internal
     internal static Plugin Instance;
     internal static ManualLogSource Beep;
-    internal static HttpClient HttpClient = new();
     internal static Harmony TogglableHarmony = new($"{MyPluginInfo.PLUGIN_GUID}.togglable");
     internal static Harmony PermanentHarmony = new($"{MyPluginInfo.PLUGIN_GUID}.permanent");
 
@@ -31,13 +25,13 @@ public class Plugin : BaseUnityPlugin
     // Configs
     internal static ConfigEntry<int> ConfigPresetSeed;
     internal static ConfigEntry<bool> PersistBetweenGameRestarts;
-    private static ConfigEntry<string> LeaderboardUri;
-    private static ConfigEntry<int> TimeoutSeconds;
+    internal static ConfigEntry<string> LeaderboardUri;
+    internal static ConfigEntry<int> TimeoutSeconds;
     internal static ConfigEntry<string> EnabledGamemodesStr;
     internal static List<string> EnabledGamemodes;
-    private static ConfigEntry<string> DesiredRouteDescription;
-    private static ConfigEntry<int> SeedSearchMin;
-    private static ConfigEntry<int> SeedSearchMax;
+    internal static ConfigEntry<string> DesiredRouteDescription;
+    internal static ConfigEntry<int> SeedSearchMin;
+    internal static ConfigEntry<int> SeedSearchMax;
 
     private void Awake()
     {
@@ -48,82 +42,37 @@ public class Plugin : BaseUnityPlugin
         EnabledGamemodesStr = Config.Bind(
             "General",
             "Gamemodes",
-            $"{GamemodesList.GetAllGamemodesStr(true, "|")}",
-            $"Gamemodes which should be affected by IShowSeed, separated by `|`. Available values (can append \"-Hardmode\", \"-Iron\" or \"-Hardmode-Iron\"):\n{GamemodesList.GetAllGamemodesStr(false, "\n")}"
+            $"{Helpers.GetAllGamemodesStr(true, "|")}",
+            $"Gamemodes which should be affected by IShowSeed, separated by `|`. Available values (can append \"-Hardmode\", \"-Iron\" or \"-Hardmode-Iron\"):\n{Helpers.GetAllGamemodesStr(false, "\n")}"
         );
         EnabledGamemodes = [.. EnabledGamemodesStr.Value.Split('|')];
         LeaderboardUri = Config.Bind("Leaderboards", "Uri", "http://128.199.54.23:80", "If you encounter any network problems, make sure you have the latest version of the mod and reset this to default");
-        TimeoutSeconds = Config.Bind("Leaderboards", "TimeoutSeconds", 15, "If this is not enough, either the server is down or you have network issues");
+        TimeoutSeconds = Config.Bind("Leaderboards", "TimeoutSeconds", 10, "If this is not enough, either the server is down or you have network issues");
         DesiredRouteDescription = Config.Bind("SeedSearch", "DesiredRouteDescription", "shortcut_burner: perk_u_t2_adoptionday, perk_metabolicstasis, perk_rabbitdna", "Format: `{route name}: {unstable_perk1}, {perk2}, {perk3}`, available route names: `default`, `shortcut_sink`, `shortcut_burner`");
         SeedSearchMin = Config.Bind("SeedSearch", "MinSeed", 3665, "Min seed for desired route search");
         SeedSearchMax = Config.Bind("SeedSearch", "MaxSeed", 3665, "Max seed for desired route search, do not make this range too big or your game will load forever");
 
         SceneManager.sceneLoaded += OnGameStartup;
-        PatchAllWithAttribute<PermanentPatchAttribute>(PermanentHarmony);
-        HttpClient.BaseAddress = new Uri(LeaderboardUri.Value);
-        HttpClient.Timeout = TimeSpan.FromSeconds(TimeoutSeconds.Value);
         Beep.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");
     }
 
-    internal static void PatchAllWithAttribute<T>(Harmony harmony) where T : Attribute
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        var patches = assembly.GetTypes()
-            .Where(t => t.GetCustomAttribute<T>() != null);
-        foreach (var p in patches)
-        {
-            harmony.PatchAll(p);
-        }
-    }
-
-    public void OnGameStartup(Scene scene, LoadSceneMode _)
+    public void OnGameStartup(Scene scene, LoadSceneMode loadSceneMode)
     {
         if (scene.name != "Main-Menu" || OnStartupDone) return;
         OnStartupDone = true;
 
+        _ = MasterServer.InitializeHttpClient();
+        ClearSeedOnRestartIfNeeded();
+        Vanga.DoSeedSearch();
+        Helpers.PatchAllWithAttribute<PermanentPatchAttribute>(PermanentHarmony);
+    }
+
+    public void ClearSeedOnRestartIfNeeded()
+    {
         if (!PersistBetweenGameRestarts.Value)
         {
             ConfigPresetSeed.Value = 0;
             Beep.LogInfo("PersistBetweenGameRestarts is false, clearing the preset seed");
-        }
-        if (!string.IsNullOrWhiteSpace(DesiredRouteDescription.Value))
-        {
-            const int RequiredPerkCount = 3;
-            var validRoutes = new HashSet<string> { "default", "shortcut_sink", "shortcut_burner" };
-            
-            var parts = DesiredRouteDescription.Value.Split(':');
-            if (parts.Length == 0)
-            {
-                Beep.LogWarning($"Invalid DesiredRouteDescription format: '{DesiredRouteDescription.Value}'. Expected format: '{{route}}: {{perk1}}, {{perk2}}, {{perk3}}'");
-                return;
-            }
-            
-            string routeName = parts[0].Trim().ToLower();
-            string[] perks = parts.Length >= 2 ? [.. parts[1].Split(',').Select(p => p.Trim().ToLower())] : [];
-            if (!validRoutes.Contains(routeName))
-            {
-                Beep.LogWarning($"Invalid desired route name: '{routeName}'. Valid routes are: {string.Join(", ", validRoutes)}");
-                return;
-            }
-            
-            if (perks.Length != RequiredPerkCount)
-            {
-                Beep.LogWarning($"Invalid desired perk count: {perks.Length}. Expected exactly {RequiredPerkCount} perks but got: {string.Join(", ", perks)}");
-                return;
-            }
-
-            Beep.LogInfo($"Searching desired route: {routeName}, perks: {string.Join(", ", perks)}");
-            
-            for (int seed = SeedSearchMin.Value; seed <= SeedSearchMax.Value; ++seed)
-            {
-                Vanga.RouteInfo prediction = Vanga.GenerateRouteInfos(seed).First(x => x.RouteName == routeName);
-                if (prediction.PerkMachines[0].PredictedPerks.PerkIds.Contains(perks[0]) &&
-                    prediction.PerkMachines[1].PredictedPerks.PerkIds.Contains(perks[1]) &&
-                    prediction.PerkMachines[2].PredictedPerks.PerkIds.Contains(perks[2]))
-                {
-                    Beep.LogInfo($"Found suitable seed: {seed}");
-                }
-            }
         }
     }
 }
@@ -155,7 +104,7 @@ public static class SceneManager_LoadScene_Patcher
                 {
                     Plugin.Beep.LogInfo("Applying patches for random for the first time");
                     Rod.SwitchToMode(Rod.ERandomMode.Enabled);
-                    Plugin.PatchAllWithAttribute<TogglablePatchAttribute>(Plugin.TogglableHarmony);
+                    Helpers.PatchAllWithAttribute<TogglablePatchAttribute>(Plugin.TogglableHarmony);
                 }
             }
             else
@@ -166,45 +115,3 @@ public static class SceneManager_LoadScene_Patcher
     }
 }
 
-[AttributeUsage(AttributeTargets.Class)]
-public class TogglablePatchAttribute : Attribute { }
-
-[AttributeUsage(AttributeTargets.Class)]
-public class PermanentPatchAttribute : Attribute { }
-
-
-internal static class GamemodesList
-{
-    internal static List<string> BaseGamemodes = [
-        "Campaign",
-        "Endless Superstructure",
-        "Endless Substructure",
-        "Endless Underworks",
-        "Endless Silos",
-        "Endless Pipeworks",
-        "Endless Habitation",
-        "Endless Abyss",
-    ];
-
-    internal static List<string> GetAllGamemodes(bool withOptions)
-    {
-        List<string> res = [];
-        foreach (var g in BaseGamemodes)
-        {
-            res.Add(g);
-            if (withOptions)
-            {
-                res.Add(g + "-Hardmode");
-                res.Add(g + "-Iron");
-                res.Add(g + "-Hardmode-Iron");
-            }
-        }
-        return res;
-    }
-
-    internal static string GetAllGamemodesStr(bool withOptions, string delimiter)
-    {
-        return String.Join(delimiter, GetAllGamemodes(withOptions));
-    }
-
-}

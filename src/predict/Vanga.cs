@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IShowSeed.Prediction;
 
@@ -64,5 +65,48 @@ public static class Vanga
                 ]
             }
         ];
+    }
+
+    public static void DoSeedSearch()
+    {
+        if (!string.IsNullOrWhiteSpace(Plugin.DesiredRouteDescription.Value))
+        {
+            const int RequiredPerkCount = 3;
+            var validRoutes = new HashSet<string> { "default", "shortcut_sink", "shortcut_burner" };
+
+            var parts = Plugin.DesiredRouteDescription.Value.Split(':');
+            if (parts.Length == 0)
+            {
+                Plugin.Beep.LogWarning($"Invalid DesiredRouteDescription format: '{Plugin.DesiredRouteDescription.Value}'. Expected format: '{{route}}: {{perk1}}, {{perk2}}, {{perk3}}'");
+                return;
+            }
+
+            string routeName = parts[0].Trim().ToLower();
+            string[] perks = parts.Length >= 2 ? [.. parts[1].Split(',').Select(p => p.Trim().ToLower())] : [];
+            if (!validRoutes.Contains(routeName))
+            {
+                Plugin.Beep.LogWarning($"Invalid desired route name: '{routeName}'. Valid routes are: {string.Join(", ", validRoutes)}");
+                return;
+            }
+
+            if (perks.Length != RequiredPerkCount)
+            {
+                Plugin.Beep.LogWarning($"Invalid desired perk count: {perks.Length}. Expected exactly {RequiredPerkCount} perks but got: {string.Join(", ", perks)}");
+                return;
+            }
+
+            Plugin.Beep.LogInfo($"Searching desired route: {routeName}, perks: {string.Join(", ", perks)}");
+
+            for (int seed = Plugin.SeedSearchMin.Value; seed <= Plugin.SeedSearchMax.Value; ++seed)
+            {
+                Vanga.RouteInfo prediction = Vanga.GenerateRouteInfos(seed).First(x => x.RouteName == routeName);
+                if (prediction.PerkMachines[0].PredictedPerks.PerkIds.Contains(perks[0]) &&
+                    prediction.PerkMachines[1].PredictedPerks.PerkIds.Contains(perks[1]) &&
+                    prediction.PerkMachines[2].PredictedPerks.PerkIds.Contains(perks[2]))
+                {
+                    Plugin.Beep.LogInfo($"Found suitable seed: {seed}");
+                }
+            }
+        }
     }
 }

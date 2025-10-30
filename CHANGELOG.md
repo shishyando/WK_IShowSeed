@@ -1,3 +1,8 @@
+# Version 1.7.0 Auto server selection update 31/oct/25
+
+### Added:
+* Automatic server selection (added a proxy in Russia). Invalid overrides will be reset to best working server. Valid overrides stay.
+
 # Version 1.6.0 Main menu button update 31/oct/25
 
 ### Added:

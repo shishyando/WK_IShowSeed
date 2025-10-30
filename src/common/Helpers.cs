@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using HarmonyLib;
 
 namespace IShowSeed;
@@ -27,4 +30,58 @@ public static class Helpers
         }
         return result;
     }
+
+
+    internal static void PatchAllWithAttribute<T>(Harmony harmony) where T : Attribute
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var patches = assembly.GetTypes()
+            .Where(t => t.GetCustomAttribute<T>() != null);
+        foreach (var p in patches)
+        {
+            harmony.PatchAll(p);
+        }
+    }
+
+    internal static List<string> BaseGamemodes = [
+        "Campaign",
+        "Endless Superstructure",
+        "Endless Substructure",
+        "Endless Underworks",
+        "Endless Silos",
+        "Endless Pipeworks",
+        "Endless Habitation",
+        "Endless Abyss",
+    ];
+
+    internal static List<string> GetAllGamemodes(bool withOptions)
+    {
+        List<string> res = [];
+        foreach (var g in BaseGamemodes)
+        {
+            res.Add(g);
+            if (withOptions)
+            {
+                res.Add(g + "-Hardmode");
+                res.Add(g + "-Iron");
+                res.Add(g + "-Hardmode-Iron");
+            }
+        }
+        return res;
+    }
+
+    internal static string GetAllGamemodesStr(bool withOptions, string delimiter)
+    {
+        return String.Join(delimiter, GetAllGamemodes(withOptions));
+    }
+
 }
+
+
+[AttributeUsage(AttributeTargets.Class)]
+public class TogglablePatchAttribute : Attribute { }
+
+[AttributeUsage(AttributeTargets.Class)]
+public class PermanentPatchAttribute : Attribute { }
+
+
