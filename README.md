@@ -8,7 +8,7 @@ Seeded runs, now with leaderboards! Set seed in any gamemode via UI and make you
 
 ## UI
 
-Press `ctrl + shift + S` at the main menu to set or clear the seed
+Press `ctrl + shift + S` or `seed runs` at the main menu to set or clear the seed
 <div align="left">
 <img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/menu.jpg" style="width: 800px; object-fit: contain;">
 </div>

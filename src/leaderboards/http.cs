@@ -12,6 +12,7 @@ public static class LeaderboardManager
     public static async Task<List<LeaderboardEntry>> FetchLeaderboards(string gamemode, Leaderboard_Panel.ScoreType scoreType, int limit = 10, string steamid = "")
     {
         string endpoint = string.Format($"getstats?gamemode={gamemode}&limit={limit}&sortby={scoreType}&steamid={steamid}");
+        Plugin.Beep.LogWarning($"Fetching Leaderboards: {endpoint}");
 
         using HttpResponseMessage response = await Plugin.HttpClient.GetAsync(endpoint);
         if (!response.IsSuccessStatusCode)

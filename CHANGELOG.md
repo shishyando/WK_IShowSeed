@@ -1,3 +1,11 @@
+# Version 1.6.0 Seed search update 31/oct/25
+
+### Added:
+* Main menu button to open seed window (also still available via `ctrl + shift + S`)
+<div align="left">
+<img src="https://raw.githubusercontent.com/shishyando/WK_IShowSeed/main/img/menu.jpg" style="width: 700px; object-fit: contain;">
+</div>
+
 # Version 1.5.0 Seed search update 30/oct/25
 
 ### Added:
