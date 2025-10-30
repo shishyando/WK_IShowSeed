@@ -1,4 +1,4 @@
-# Version 1.6.0 Seed search update 31/oct/25
+# Version 1.6.0 Main menu button update 31/oct/25
 
 ### Added:
 * Main menu button to open seed window (also still available via `ctrl + shift + S`)
