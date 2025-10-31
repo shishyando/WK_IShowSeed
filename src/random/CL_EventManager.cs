@@ -4,13 +4,16 @@ using HarmonyLib;
 namespace IShowSeed.Random;
 
 
-[TogglablePatch]
+[PermanentPatch]
 [HarmonyPatch(typeof(CL_EventManager), "GetPossibleEvents")]
 public static class CL_EventManager_GetPossibleEvents_Patcher
 {
     public static void Postfix(ref List<SessionEvent> __result)
     {
-        __result?.RemoveAll(x => { return x.startCheck == SessionEvent.EventStart.checkEverySecond; });
+        if (Plugin.IsSeededRun())
+        {
+            __result?.RemoveAll(x => { return x.startCheck == SessionEvent.EventStart.checkEverySecond; });
+        }
     }
 
 }

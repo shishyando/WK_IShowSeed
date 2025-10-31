@@ -30,7 +30,7 @@ View seed ingame via Debug Menu (`F5`)
 
 ## Config
 
-Configs are located in `WhiteKnuckleFolder/BepInEx/Config/shishyando.WK.IShowSeed.cfg`.
+Config path: `WhiteKnuckleFolder/BepInEx/Config/shishyando.WK.IShowSeed.cfg`.
 
 ### `General.PresetSeed` (UI is simpler)
 Preset seed which will be applied to all runs. `0` for random.
@@ -40,6 +40,9 @@ You can select the gamemodes which will be affected by the seed. Default is camp
 
 ### `General.PersistBetweenGameRestarts`
 If enabled, the seed will be remembered across game restarts. If not, preset seed will be cleared on game restart. Default is `true`.
+
+### `General.EnableRandomSeedReplayability`
+If true, random-seeded runs can be replayed in a seeded run by entering the seed you had. Default is `false`.
 
 ### `Leaderboards.Uri`
 Override server for leaderboards sync. In case of any leaderboards issues, try downloading the latest version of the mod. Invalid overrides are automatically reset to best default server. Valid overrides stay.

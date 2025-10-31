@@ -16,7 +16,7 @@ namespace IShowSeed
 
         public static bool Prefix(Leaderboard_Panel __instance)
         {
-            if (Plugin.ConfigPresetSeed.Value == 0 || !MasterServer.Initialized)
+            if (Plugin.IsRandomRun() || !MasterServer.Initialized)
             {
                 return true;
             }

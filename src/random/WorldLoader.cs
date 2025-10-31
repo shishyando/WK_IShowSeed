@@ -2,7 +2,7 @@ using HarmonyLib;
 
 namespace IShowSeed.Random;
 
-[TogglablePatch]
+[OnlyForSeededRunsPatch]
 [HarmonyPatch(typeof(WorldLoader), "Awake")]
 public static class WorldLoader_Awake_Patcher
 {
@@ -15,12 +15,15 @@ public static class WorldLoader_Awake_Patcher
 }
 
 
-[TogglablePatch]
+[PermanentPatch]
 [HarmonyPatch(typeof(WorldLoader), "Initialize")]
 public static class WorldLoader_Initialize_Patcher
 {
-    public static void Prefix()
+    public static void Postfix()
     {
-        Plugin.Beep.LogInfo($"World initializing with seed: {Plugin.ConfigPresetSeed.Value}, resetting random...");
+        if (Plugin.IsRandomRun())
+        {
+            Plugin.SeedForRandom = WorldLoader.instance.seed;
+        }
     }
 }

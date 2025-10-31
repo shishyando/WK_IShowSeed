@@ -4,7 +4,7 @@ namespace IShowSeed.Random;
 
 // basically determines all the random stuff except for perks, vendos and artifacts,
 // it should be almost the only one to override
-[TogglablePatch]
+[OnlyForSeededRunsPatch]
 [HarmonyPatch(typeof(SpawnTable.SpawnSettings), "RandomCheck")]
 public static class SpawnSettings_RandomCheck_Patcher
 {

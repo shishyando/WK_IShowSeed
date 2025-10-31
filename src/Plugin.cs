@@ -32,6 +32,7 @@ public class Plugin : BaseUnityPlugin
     internal static ConfigEntry<string> DesiredRouteDescription;
     internal static ConfigEntry<int> SeedSearchMin;
     internal static ConfigEntry<int> SeedSearchMax;
+    internal static ConfigEntry<bool> EnableRandomSeedReplayability;
 
     private void Awake()
     {
@@ -39,6 +40,7 @@ public class Plugin : BaseUnityPlugin
         Beep = Logger;
         ConfigPresetSeed = Config.Bind("General", "PresetSeed", 0, "Preset seed, `0` to keep the default behaviour");
         PersistBetweenGameRestarts = Config.Bind("General", "PersistBetweenGameRestarts", true, "If true, the seed will stay the same even after game restart");
+        EnableRandomSeedReplayability = Config.Bind("General", "EnableRandomSeedReplayability", false, "If true, random-seeded runs can be replayed in a seeded run by entering the seed you had");
         EnabledGamemodesStr = Config.Bind(
             "General",
             "Gamemodes",
@@ -75,6 +77,21 @@ public class Plugin : BaseUnityPlugin
             Beep.LogInfo("PersistBetweenGameRestarts is false, clearing the preset seed");
         }
     }
+
+    public static bool IsSeededRun()
+    {
+        return ConfigPresetSeed.Value != 0;
+    }
+
+    public static bool IsRandomRun()
+    {
+        return ConfigPresetSeed.Value == 0;
+    }
+
+    public static bool ShouldEnableRod()
+    {
+        return (IsSeededRun() || EnableRandomSeedReplayability.Value) && EnabledGamemodes.Contains(CL_GameManager.GetGamemodeName());
+    }
 }
 
 
@@ -93,7 +110,7 @@ public static class SceneManager_LoadScene_Patcher
         // apply patches before the first Awake but after the gamemode is known
         if (sceneName == "Game-Main")
         {
-            if (Plugin.EnabledGamemodes.Contains(CL_GameManager.GetGamemodeName()))
+            if (Plugin.ShouldEnableRod())
             {
                 if (Rod.GetMode() == Rod.ERandomMode.Enabled)
                 {
@@ -104,7 +121,7 @@ public static class SceneManager_LoadScene_Patcher
                 {
                     Plugin.Beep.LogInfo("Applying patches for random for the first time");
                     Rod.SwitchToMode(Rod.ERandomMode.Enabled);
-                    Helpers.PatchAllWithAttribute<TogglablePatchAttribute>(Plugin.TogglableHarmony);
+                    Helpers.PatchAllWithAttribute<OnlyForSeededRunsPatchAttribute>(Plugin.TogglableHarmony);
                 }
             }
             else

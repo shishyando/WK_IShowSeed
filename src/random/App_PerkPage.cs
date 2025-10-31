@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace IShowSeed.Random;
 
-[TogglablePatch]
+[OnlyForSeededRunsPatch]
 [HarmonyPatch(typeof(App_PerkPage), "GenerateCards", [typeof(bool)])]
 public static class App_PerkPage_GenerateCards_Patcher
 {

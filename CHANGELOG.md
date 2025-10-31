@@ -1,3 +1,12 @@
+# Version 1.8.0 Major bugfix update 01/nov/25
+
+### Added:
+* `General.EnableRandomSeedReplayability`
+If true, random-seeded runs can be replayed in a seeded run by entering the seed you had. Default is `false`.
+
+### Bugfixes:
+* Clearing the seed window would set each run's seed to zero, forcing you to play the same run all the time (btw with kinda bad perks) and not updating the leaderboards.
+
 # Version 1.7.0 Auto server selection update 31/oct/25
 
 ### Added:

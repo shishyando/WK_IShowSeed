@@ -79,7 +79,7 @@ public static class Helpers
 
 
 [AttributeUsage(AttributeTargets.Class)]
-public class TogglablePatchAttribute : Attribute { }
+public class OnlyForSeededRunsPatchAttribute : Attribute { }
 
 [AttributeUsage(AttributeTargets.Class)]
 public class PermanentPatchAttribute : Attribute { }

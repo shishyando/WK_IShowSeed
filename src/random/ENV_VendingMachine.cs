@@ -2,7 +2,7 @@ using HarmonyLib;
 
 namespace IShowSeed.Random;
 
-[TogglablePatch]
+[OnlyForSeededRunsPatch]
 [HarmonyPatch(typeof(ENV_VendingMachine), "GenerateOptions")]
 public static class ENV_VendingMachine_GenerateOptions_Patcher
 {
@@ -29,7 +29,7 @@ public static class ENV_VendingMachine_GenerateOptions_Patcher
 
 
 // seed will be set by the mod, not by the game
-[TogglablePatch]
+[OnlyForSeededRunsPatch]
 [HarmonyPatch(typeof(ENV_VendingMachine), "SetSeed")]
 public static class ENV_VendingMachine_SetSeed_Patcher
 {

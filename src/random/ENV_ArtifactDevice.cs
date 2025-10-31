@@ -3,7 +3,7 @@ using HarmonyLib;
 namespace IShowSeed.Random;
 
 
-[TogglablePatch]
+[OnlyForSeededRunsPatch]
 [HarmonyPatch(typeof(ENV_ArtifactDevice), "Start")]
 public static class ENV_ArtifactDevice_Start_Patcher
 {

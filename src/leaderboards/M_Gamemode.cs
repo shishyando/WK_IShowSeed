@@ -8,7 +8,7 @@ public static class M_Gamemode_Finish_Patcher
 {
     public static bool Prefix(M_Gamemode __instance, float time, bool hasFinished)
     {
-        if (Plugin.ConfigPresetSeed.Value == 0)
+        if (Plugin.IsRandomRun())
         {
             return true;
         }

@@ -99,7 +99,7 @@ public static class Vanga
 
             for (int seed = Plugin.SeedSearchMin.Value; seed <= Plugin.SeedSearchMax.Value; ++seed)
             {
-                Vanga.RouteInfo prediction = Vanga.GenerateRouteInfos(seed).First(x => x.RouteName == routeName);
+                Vanga.RouteInfo prediction = GenerateRouteInfos(seed).First(x => x.RouteName == routeName);
                 if (prediction.PerkMachines[0].PredictedPerks.PerkIds.Contains(perks[0]) &&
                     prediction.PerkMachines[1].PredictedPerks.PerkIds.Contains(perks[1]) &&
                     prediction.PerkMachines[2].PredictedPerks.PerkIds.Contains(perks[2]))
