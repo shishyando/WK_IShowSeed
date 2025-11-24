@@ -27,6 +27,35 @@ public static class ENV_VendingMachine_GenerateOptions_Patcher
     }
 }
 
+[OnlyForSeededRunsPatch]
+[HarmonyPatch(typeof(ENV_VendingMachine), "Buy", [typeof(int), typeof(bool), typeof(bool)])]
+public static class ENV_VendingMachine_Buy_Patcher
+{
+    private static readonly AccessTools.FieldRef<ENV_VendingMachine, bool> deadRef = AccessTools.FieldRefAccess<ENV_VendingMachine, bool>("dead");
+
+    public static void Prefix(ref Rod.Context __state, ENV_VendingMachine __instance, ref int i, bool force, bool free)
+    {
+        if (!(force && free && deadRef(__instance)))
+        {
+            return;
+        }
+        // get seed, save state, Random.InitState, restore later
+        Rod.Enter(ref __state, GenerateCustomCallSite(__instance));
+        i = UnityEngine.Random.Range(0, __instance.buttons.Length);
+    }
+
+    public static void Finalizer(ref Rod.Context __state)
+    {
+        Rod.Exit(in __state);
+    }
+
+    private static string GenerateCustomCallSite(ENV_VendingMachine i)
+    {
+        UnityEngine.Transform tr = i.transform;
+        return $"vendo_{Helpers.LevelOf(tr)}_{tr.position.x:F2}_{tr.position.y:F2}_{tr.position.z:F2}_buy_dead";
+    }
+}
+
 
 // seed will be set by the mod, not by the game
 [OnlyForSeededRunsPatch]

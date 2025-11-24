@@ -1,3 +1,7 @@
+# Version 1.8.2 Consistent vendo explosions 24/nov/25
+### Changed:
+* Now vending machines give consistent items on explosions. Try out seed `5687494`.
+
 # Version 1.8.1 Seed searcher changed 24/nov/25
 ### Changed:
 * Seed searcher now has two parameters: search iterations, results cap instead of `MinSeed` and `MaxSeed`, allowing you to balance search time and how many results you want.
