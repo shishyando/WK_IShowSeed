@@ -97,14 +97,21 @@ public static class Vanga
 
             Plugin.Beep.LogInfo($"Searching desired route: {routeName}, perks: {string.Join(", ", perks)}");
 
-            for (int seed = Plugin.SeedSearchMin.Value; seed <= Plugin.SeedSearchMax.Value; ++seed)
+            UnityEngine.Random.InitState(Plugin.SeedSearchIterations.Value);
+            int foundSeeds = 0;
+            for (int iteration = 0; iteration <= Plugin.SeedSearchIterations.Value; ++iteration)
             {
-                Vanga.RouteInfo prediction = GenerateRouteInfos(seed).First(x => x.RouteName == routeName);
+                int seed = UnityEngine.Random.Range(0, 10000000);
+                RouteInfo prediction = GenerateRouteInfos(seed).First(x => x.RouteName == routeName);
                 if (prediction.PerkMachines[0].PredictedPerks.PerkIds.Contains(perks[0]) &&
                     prediction.PerkMachines[1].PredictedPerks.PerkIds.Contains(perks[1]) &&
                     prediction.PerkMachines[2].PredictedPerks.PerkIds.Contains(perks[2]))
                 {
                     Plugin.Beep.LogInfo($"Found suitable seed: {seed}");
+                    if (++foundSeeds >= Plugin.SeedSearchResultsNeeded.Value)
+                    {
+                        break;
+                    }
                 }
             }
         }

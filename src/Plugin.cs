@@ -30,8 +30,8 @@ public class Plugin : BaseUnityPlugin
     internal static ConfigEntry<string> EnabledGamemodesStr;
     internal static List<string> EnabledGamemodes;
     internal static ConfigEntry<string> DesiredRouteDescription;
-    internal static ConfigEntry<int> SeedSearchMin;
-    internal static ConfigEntry<int> SeedSearchMax;
+    internal static ConfigEntry<int> SeedSearchIterations;
+    internal static ConfigEntry<int> SeedSearchResultsNeeded;
     internal static ConfigEntry<bool> EnableRandomSeedReplayability;
 
     private void Awake()
@@ -51,8 +51,8 @@ public class Plugin : BaseUnityPlugin
         LeaderboardUri = Config.Bind("Leaderboards", "Uri", "http://128.199.54.23:80", "If you encounter any network problems, make sure you have the latest version of the mod and reset this to default");
         TimeoutSeconds = Config.Bind("Leaderboards", "TimeoutSeconds", 10, "If this is not enough, either the server is down or you have network issues");
         DesiredRouteDescription = Config.Bind("SeedSearch", "DesiredRouteDescription", "shortcut_burner: perk_u_t2_adoptionday, perk_metabolicstasis, perk_rabbitdna", "Format: `{route name}: {unstable_perk1}, {perk2}, {perk3}`, available route names: `default`, `shortcut_sink`, `shortcut_burner`");
-        SeedSearchMin = Config.Bind("SeedSearch", "MinSeed", 3665, "Min seed for desired route search");
-        SeedSearchMax = Config.Bind("SeedSearch", "MaxSeed", 3665, "Max seed for desired route search, do not make this range too big or your game will load forever");
+        SeedSearchIterations = Config.Bind("SeedSearch", "SearchIterations", 0, "How many seed search iterations to run");
+        SeedSearchResultsNeeded = Config.Bind("SeedSearch", "SearchResultsCap", 25, "How many seeds with desired route should be found, do not make search range too big or your game will load forever");
 
         SceneManager.sceneLoaded += OnGameStartup;
         Beep.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");

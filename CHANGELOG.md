@@ -1,3 +1,7 @@
+# Version 1.8.1 Seed searcher changed 24/nov/25
+### Changed:
+* Seed searcher now has two parameters: search iterations, results cap instead of `MinSeed` and `MaxSeed`, allowing you to balance search time and how many results you want.
+
 # Version 1.8.0 Major bugfix update 01/nov/25
 
 ### Added:
