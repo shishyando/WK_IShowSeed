@@ -1,3 +1,7 @@
+# Version 1.8.3 Consistent supply crates 25/nov/25
+### Changed:
+* Now supply crates drop consistent items after being destroyed. For example, the supply crate at the end of silos with seed `1` should always drop adrenaline + rebar + piton.
+
 # Version 1.8.2 Consistent vendo explosions 24/nov/25
 ### Changed:
 * Now vending machines give consistent items on explosions. Try out seed `5687494`.
