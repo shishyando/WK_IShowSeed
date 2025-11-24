@@ -1,3 +1,8 @@
+# Version 1.8.4 pickpuck #1 25/nov/25
+### Changed:
+* leaderboards.jpg
+* readme
+
 # Version 1.8.3 Consistent supply crates 25/nov/25
 ### Changed:
 * Now supply crates drop consistent items after being destroyed. For example, the supply crate at the end of silos with seed `1` should always drop adrenaline + rebar + piton.

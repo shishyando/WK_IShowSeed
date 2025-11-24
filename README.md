@@ -53,11 +53,11 @@ Timeout for all leaderboards requests. The server should respond fast enough, so
 ### `SeedSearch.DesiredRouteDescription`
 Describe which route you want to go and which perks you want to get in the config and IShowSeed will search for suitable seeds.
 
-### `SeedSearch.MinSeed`
-Min seed for seed search.
+### `SeedSearch.SearchIterations`
+How many seed search iterations should be run. Do not make seed search range too big or your game will load forever.
 
-### `SeedSearch.MaxSeed`
-Max seed for seed search. Do not make seed search range too big or your game will load forever, 10000 range should be fine.
+### `SeedSearch.SearchResultsCap`
+The search stops early once enough suitable seeds are found.
 
 ## Found a bug? Something is broken?
 
