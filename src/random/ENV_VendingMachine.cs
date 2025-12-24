@@ -20,10 +20,10 @@ public static class ENV_VendingMachine_GenerateOptions_Patcher
         Rod.Exit(in __state);
     }
 
-    private static string GenerateCustomCallSite(ENV_VendingMachine i)
+    private static string GenerateCustomCallSite(ENV_VendingMachine instance)
     {
-        UnityEngine.Transform tr = i.transform;
-        return $"vendo_{Helpers.LevelOf(tr)}_{tr.position.x:F2}_{tr.position.y:F2}_{tr.position.z:F2}";
+        string callSite = $"vendo_{Helpers.LevelOfStr(instance.transform)}_{instance.gameObject.name}";
+        return callSite;
     }
 }
 
@@ -49,10 +49,10 @@ public static class ENV_VendingMachine_Buy_Patcher
         Rod.Exit(in __state);
     }
 
-    private static string GenerateCustomCallSite(ENV_VendingMachine i)
+    private static string GenerateCustomCallSite(ENV_VendingMachine instance)
     {
-        UnityEngine.Transform tr = i.transform;
-        return $"vendo_{Helpers.LevelOf(tr)}_{tr.position.x:F2}_{tr.position.y:F2}_{tr.position.z:F2}_buy_dead";
+        string callSite = $"vendo_{Helpers.LevelOfStr(instance.transform)}_{instance.gameObject.name}_dead";
+        return callSite;
     }
 }
 

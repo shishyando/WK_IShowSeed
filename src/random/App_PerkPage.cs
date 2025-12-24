@@ -27,7 +27,7 @@ public static class App_PerkPage_GenerateCards_Patcher
     private static string GenerateCustomCallSite(App_PerkPage i, bool refresh)
     {
         Transform tr = osRef(i).worldInterface.transform;
-        return $"perkpage_{i.perkPageType}_{Helpers.LevelOf(tr)}_{i.minCards}_{i.maxCards}_{refresh}";
+        return $"perkpage_{i.perkPageType}_{Helpers.LevelOfStr(tr)}_{i.minCards}_{i.maxCards}_{refresh}";
     }
 
 }

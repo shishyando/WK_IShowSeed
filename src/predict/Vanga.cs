@@ -15,6 +15,39 @@ public static class Vanga
         "perkpage_regular_Campaign_Interlude_Chute_To_Habitation_2_2",
     ];
 
+    private static readonly List<string> _vendingMachines = [
+        // exp perk area
+        "vendo_M1_Silos_SafeArea_01_Prop_VendingMachine", // default, burner
+        "vendo_M1_Silos_SafeArea_01_Prop_VendingMachine.01", // default, burner
+
+        // prepipes
+        "vendo_Campaign_Interlude_Silo_To_Pipeworks_01_Prop_VendingMachine", // default, burner
+        "vendo_Campaign_Interlude_Silo_To_Pipeworks_01_Prop_VendingMachine.01", // default, burner
+
+        // after burner shortcut
+        "vendo_Campaign_Interlude_Chute_To_Habitation_Prop_VendingMachine", // burner
+
+        // after teeth before pier
+        "vendo_M3_Habitation_Pier_Entrance_01_Prop_VendingMachine", // all
+
+        // right after pier
+        "vendo_M3_Habitation_Lab_Lobby_Prop_VendingMachine_T2", // all
+
+        // preabyss
+        "vendo_M3_Habitation_Lab_Ending_Prop_VendingMachine", // all
+        "vendo_Campaign_Interlude_Habitation_To_Abyss_01_Prop_VendingMachine_Big", // all
+
+        // sink shortcut ending
+        "vendo_Campaign_Interlude_Sink_To_Pipeworks_01_Prop_VendingMachine", // sink
+
+        // preelevator
+        "vendo_Campaign_Interlude_Pipeworks_To_Habitation_01_Prop_VendingMachine", // default, sink
+
+        // preteeth
+        "vendo_M3_Habitation_Shaft_Intro_Prop_VendingMachine", // default, sink
+        "vendo_M3_Habitation_Shaft_Intro_Prop_VendingMachine.01", // default, sink
+    ];
+
     public struct PerkMachinePred
     {
         public App_PerkPage.PerkPageType PerkPageType;

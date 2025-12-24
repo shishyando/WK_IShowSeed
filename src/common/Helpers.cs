@@ -11,10 +11,15 @@ public static class Helpers
     public static readonly AccessTools.FieldRef<CL_AssetManager, List<CL_AssetManager.WKDatabaseHolder>> databasesRef
         = AccessTools.FieldRefAccess<List<CL_AssetManager.WKDatabaseHolder>>(typeof(CL_AssetManager), "databases");
 
-    public static string LevelOf(UnityEngine.Transform tr)
+    public static string LevelOfStr(UnityEngine.Transform tr)
     {
         if (tr == null) return $"could_not_get_level_of_{tr.gameObject.name}";
         return tr.GetComponentInParent<M_Level>(true).levelName;
+    }
+    public static M_Level LevelOf(UnityEngine.Transform tr)
+    {
+        if (tr == null) return null;
+        return tr.GetComponentInParent<M_Level>(true);
     }
 
     public static List<Perk> GetAllPerks() // GetFullCombinedAssetDatabase spams in logs
