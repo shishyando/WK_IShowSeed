@@ -1,3 +1,7 @@
+# Version 1.8.5 pickpuck #2 29/jan/26
+### Fixed:
+* perk prediction in campaign
+
 # Version 1.8.4 pickpuck #1 25/nov/25
 ### Changed:
 * leaderboards.jpg

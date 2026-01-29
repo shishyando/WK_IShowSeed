@@ -27,7 +27,11 @@ public static class PerkMock
             Rod.Context _ = new();
             Rod.Enter(ref _, $"perkpage_{perkPageType}_{levelName}_{minCards}_{maxCards}_{refresh}");
 
-            List<string> tmp = GenerateInternal(perkPageType, minCards, maxCards, refresh, predictedPerks.PerkIds);
+            List<string> tmp;
+            if (perkPageType == App_PerkPage.PerkPageType.regular)
+                tmp = GenerateInternal(perkPageType, minCards, maxCards, refresh, predictedPerks.PerkIds, ["standard"]);
+            else tmp = GenerateInternal(perkPageType, minCards, maxCards, refresh, predictedPerks.PerkIds, ["unstable"]);
+            
             if (!refresh)
             {
                 predictedPerks.PerkIds = [.. tmp];
@@ -45,7 +49,7 @@ public static class PerkMock
         return predictedPerks;
     }
 
-    private static List<string> GenerateInternal(App_PerkPage.PerkPageType perkPageType, int minCards, int maxCards, bool refresh, List<string> generatedPerks)
+    private static List<string> GenerateInternal(App_PerkPage.PerkPageType perkPageType, int minCards, int maxCards, bool refresh, List<string> generatedPerks, List<string> requiredPerkTags)
     {
         List<string> result = [];
         List<string> list = [];
@@ -84,6 +88,22 @@ public static class PerkMock
             j--;
             continue;
         IL_160:
+            if (true)
+            {
+                bool flag = false;
+                foreach (string item in requiredPerkTags)
+                {
+                    if (list2[j].tags.Contains(item))
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag)
+                {
+                    list2.RemoveAt(j);
+                }
+            }
             if (refresh && list2.Count > maxCards && list != null && list.Contains(list2[j].id))
             {
                 list2.RemoveAt(j);

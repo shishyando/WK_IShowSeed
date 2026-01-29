@@ -1,6 +1,6 @@
 {
 "name": "IShowSeed",
-"version_number": "1.8.4",
+"version_number": "1.8.5",
 "website_url": "https://github.com/shishyando/WK_IShowSeed",
 "description": "Seeded runs! Now with leaderboards!",
 "dependencies": ["BepInEx-BepInExPack-5.4.2100"]
