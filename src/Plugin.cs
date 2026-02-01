@@ -65,6 +65,7 @@ public class Plugin : BaseUnityPlugin
 
         _ = MasterServer.InitializeHttpClient();
         ClearSeedOnRestartIfNeeded();
+        
         Vanga.DoSeedSearch();
         Helpers.PatchAllWithAttribute<PermanentPatchAttribute>(PermanentHarmony);
     }

@@ -1,3 +1,4 @@
+using System;
 using HarmonyLib;
 using IShowSeed.Prediction;
 using Newtonsoft.Json;
@@ -20,7 +21,7 @@ public static class MenuManager_Start_Patcher
     private static void AddSeedWindowButton(MenuManager __instance)
     {
         Transform logbookButton = __instance.menu.transform.Find("Main Menu Buttons/Logbook");
-        Transform seedWindowButton = Object.Instantiate(logbookButton, logbookButton.transform.parent);
+        Transform seedWindowButton = UnityEngine.Object.Instantiate(logbookButton, logbookButton.transform.parent);
         seedWindowButton.name = "Seeded runs";
         TextMeshProUGUI seedWindowText = seedWindowButton.GetChild(0).GetComponent<TextMeshProUGUI>();
         seedWindowText.text = "seeded runs";
@@ -85,7 +86,12 @@ public static class MenuManager_Start_Patcher
                     Plugin.ConfigPresetSeed.Value = newSeed;
                     Plugin.Instance.Config.Save();
                     Plugin.Beep.LogInfo($"Set new seed to {newSeed}");
-                    Plugin.Beep.LogInfo($"Run preview: {JsonConvert.SerializeObject(Vanga.GenerateRouteInfos(newSeed), Formatting.Indented)}");
+
+                    // Plugin.Beep.LogInfo("Seed preview:");
+                    // foreach (RouteType routeType in Enum.GetValues(typeof(RouteType)))
+                    // {
+                    //     Plugin.Beep.LogInfo($"{routeType}: {JsonConvert.SerializeObject(Vanga.GenerateRouteInfo(newSeed, routeType), Formatting.Indented)}");
+                    // }
                     seedWindow.SetActive(false);
                 }
                 else

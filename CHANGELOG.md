@@ -1,3 +1,20 @@
+# Version 1.9.0 Seed search V2 31/jan/26
+### Added:
+* seed search now shows drops from vending machines and counts injectors, here's a list of some seeds:
+```
+5096194, injectors: >= 7
+3445632, injectors: >= 7
+6655875, injectors: >= 7
+4211819, injectors: >= 7
+8986736, injectors: >= 7
+4183733, injectors: >= 7
+8849266, injectors: >= 7
+2913042, injectors: >= 8
+```
+
+### Changed:
+* seed search now works 3x faster because  previously i generated all routes instead of only generating the selected route smh
+
 # Version 1.8.5 pickpuck #2 29/jan/26
 ### Fixed:
 * perk prediction in campaign

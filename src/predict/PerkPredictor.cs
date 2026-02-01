@@ -4,14 +4,38 @@ using IShowSeed.Random;
 
 namespace IShowSeed.Prediction;
 
+
+
 public struct PredictedPerks
 {
     public List<string> PerkIds;
     public List<string> RefreshedPerkIds;
 }
 
-public static class PerkMock
+public struct PerkMachinePred
 {
+    public App_PerkPage.PerkPageType PerkPageType;
+    public string LevelName;
+    public PredictedPerks PredictedPerks;
+
+    public PerkMachinePred(App_PerkPage.PerkPageType type, string levelName, int minCards, int maxCards)
+    {
+        (PerkPageType, LevelName) = (type, levelName);
+        PredictedPerks = PerkPredictor.Generate(type, levelName, minCards, maxCards);
+    }
+}
+
+public static class PerkPredictor
+{
+    private static readonly List<string> _machines = [
+        "perkpage_unstable_M1_Silos_SafeArea_01_2_2",
+        "perkpage_regular_Campaign_Interlude_Silo_To_Pipeworks_01_3_3",
+        "perkpage_regular_Campaign_Interlude_Sink_To_Pipeworks_01_2_2",
+        "perkpage_unstable_Campaign_Interlude_Sink_To_Pipeworks_01_2_2",
+        "perkpage_regular_M3_Habitation_Shaft_Intro_3_3",
+        "perkpage_regular_Campaign_Interlude_Chute_To_Habitation_2_2",
+    ];
+
     public static PredictedPerks Generate(App_PerkPage.PerkPageType perkPageType, string levelName, int minCards, int maxCards)
     {
         Rod.SwitchToMode(Rod.ERandomMode.Prediction);
@@ -48,6 +72,7 @@ public static class PerkMock
         
         return predictedPerks;
     }
+
 
     private static List<string> GenerateInternal(App_PerkPage.PerkPageType perkPageType, int minCards, int maxCards, bool refresh, List<string> generatedPerks, List<string> requiredPerkTags)
     {
